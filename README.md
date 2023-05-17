@@ -6,3 +6,13 @@ This project is composed of three main parts:
 3. Users can create 'Albums', store iamges and give viewing priviledges to other specific users 
 
 In addition, Albums should be able to be displayed in the frontend as a slideshow presentation (User-requested feature)
+
+ERD Schema:__
+![image](https://github.com/JBudiman00/PhotoDrive/assets/65978976/aa122dbc-40f7-4379-9251-b908e2e60839)
+THe image above shows the database schema planned for this project. It is designed using draw.io.
+The Users table will have a unique user_id identifer, with email being the unique part of the table for user login.
+The password will be stored using a hash function to improve system security.__
+The photos table has a single unique int identifer. It also stores the photo as a varbinary, the datetime uploaded, image name and the user_id the photo belongs to.__
+The albums table has a single unique int identifer. It also stores the datetime of album creation, the album name and the user_id the album belongs to.
+THe photoalbum table is a join table for the many:many relationship between photos and albums. It consists of the foreign keys from the img_id and album_id.
+The useralbums table is another join table for the many:many relationship between users and albums. It consists of the foreigns keys from the img_id and user_id, where the user_id represents the users allowed to view an album not owned by the user. 
