@@ -8,7 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const db = require('./db.service');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const db_service_1 = __importDefault(require("./db.service"));
 // async function getMultiple(page = 1){
 //   const offset = helper.getOffset(page, config.listPerPage);
 //   const rows = await db.query(
@@ -25,11 +29,7 @@ const db = require('./db.service');
 // }
 function create() {
     return __awaiter(this, void 0, void 0, function* () {
-        const result = yield db.query(`SELECT * FROM Users`);
-        let message = 'Error in creating programming language';
-        if (result.affectedRows) {
-            message = 'Programming language created successfully';
-        }
+        const result = yield db_service_1.default.query(`SELECT * FROM Users`);
         return result;
     });
 }

@@ -8,15 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const mysql = require('mysql2/promise');
-const dbConfig = require('../configs/db.config');
-function query(sql, params) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const userServices = require('../services/user.service');
+function create(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const connection = yield mysql.createConnection(dbConfig);
-        const [results,] = yield connection.execute(sql, params);
-        return results;
+        try {
+            res.json(yield userServices.create(req.body));
+        }
+        catch (err) {
+            console.error(`Error while creating users`, err);
+            next(err);
+        }
     });
 }
 module.exports = {
-    query
+    create,
 };

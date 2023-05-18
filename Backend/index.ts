@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 const bodyParser = require('body-parser');
 const router = require('./app/routes/photodrive.route');
+const userRoute = require('./app/routes/user.route');
 
 
 dotenv.config();
@@ -20,6 +21,7 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.use('/test', router);
+app.use('/user', userRoute);
 
 // app.use('/programming-languages', programmingLanguagesRouter);
 

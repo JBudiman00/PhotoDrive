@@ -8,15 +8,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const mysql = require('mysql2/promise');
-const dbConfig = require('../configs/db.config');
-function query(sql, params) {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const db_service_1 = __importDefault(require("./db.service"));
+function create(userInfo) {
     return __awaiter(this, void 0, void 0, function* () {
-        const connection = yield mysql.createConnection(dbConfig);
-        const [results,] = yield connection.execute(sql, params);
-        return results;
+        console.log(userInfo);
+        const result = yield db_service_1.default.query(`INSERT INTO Users (name, passwordhash, email) 
+        VALUES (?, ?, ?)`, [
+            userInfo.name, userInfo.password, userInfo.email
+        ]);
+        let message = 'Error in creating user';
+        if (result.affectedRows) {
+            message = 'User created successfully';
+        }
+        return { message };
     });
 }
 module.exports = {
-    query
+    create,
 };

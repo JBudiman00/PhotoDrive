@@ -1,4 +1,4 @@
-const db = require('./db.service');
+import db from './db.service'
 
 // async function getMultiple(page = 1){
 //   const offset = helper.getOffset(page, config.listPerPage);
@@ -20,13 +20,6 @@ async function create(){
   const result = await db.query(
     `SELECT * FROM Users`
   );
-
-  let message = 'Error in creating programming language';
-
-  if (result.affectedRows) {
-    message = 'Programming language created successfully';
-  }
-
   return result;
 }
 
