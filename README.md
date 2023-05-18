@@ -8,7 +8,7 @@ This project is composed of three main parts:
 In addition, Albums should be able to be displayed in the frontend as a slideshow presentation (User-requested feature)
 
 ERD Schema:<br>
-![image](https://github.com/JBudiman00/PhotoDrive/assets/65978976/aa122dbc-40f7-4379-9251-b908e2e60839)
+![image](https://github.com/JBudiman00/PhotoDrive/assets/65978976/f96ea7b8-6f99-4b91-8ce2-4905a92d69be)
 The image above shows the database schema planned for this project. It is designed using draw.io.<br>
 The Users table will have a unique user_id identifer, with email being the unique part of the table for user login.<br>
 The password will be stored using a hash function to improve system security.<br>
