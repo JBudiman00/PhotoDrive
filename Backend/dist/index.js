@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const bodyParser = require('body-parser');
-const router = require('./app/routes/photodrive.route');
 const userRoute = require('./app/routes/user.route');
+const photoRoute = require('./app/routes/photo.route');
 dotenv_1.default.config();
 const port = process.env.PORT;
 const app = (0, express_1.default)();
@@ -18,8 +18,8 @@ app.use(bodyParser.urlencoded({
 app.get('/', (req, res) => {
     res.json({ message: 'ok' });
 });
-app.use('/test', router);
 app.use('/user', userRoute);
+app.use('/photo', photoRoute);
 // app.use('/programming-languages', programmingLanguagesRouter);
 // /* Error handler middleware */
 // app.use((err, req, res, next) => {

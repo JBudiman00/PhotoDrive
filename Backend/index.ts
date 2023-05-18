@@ -1,9 +1,8 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 const bodyParser = require('body-parser');
-const router = require('./app/routes/photodrive.route');
 const userRoute = require('./app/routes/user.route');
-
+const photoRoute = require('./app/routes/photo.route');
 
 dotenv.config();
 const port = process.env.PORT;
@@ -20,8 +19,8 @@ app.get('/', (req: Request, res: Response) => {
   res.json({message: 'ok'});
 })
 
-app.use('/test', router);
 app.use('/user', userRoute);
+app.use('/photo', photoRoute);
 
 // app.use('/programming-languages', programmingLanguagesRouter);
 

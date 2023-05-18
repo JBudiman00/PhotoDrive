@@ -9,52 +9,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const userServices = require('../services/user.service');
+const photoServices = require('../services/photo.service');
 function create(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.json(yield userServices.create(req.body));
+            if (!req.file) {
+                return res.status(400).send('No files were uploaded.');
+            }
+            res.json(yield photoServices.create(req.body, req.file.destination + req.file.filename));
         }
         catch (err) {
             //Handle error if email already exists in database
-            if (err.code === 'ER_DUP_ENTRY') {
-                res.send({ message: "Account already exists" });
+            if (err.code === 'ER_NO_REFERENCED_ROW_2') {
+                res.send({ message: "User Doesn't exist" });
             }
             //Catchall error
             if (err instanceof Error) {
-                console.log(err.stack);
+                console.log(err);
             }
-            //console.error(`Error while creating users`, err);
             next(err);
         }
     });
 }
-function verify(req, res, next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const user = yield userServices.verify(req.body);
-            if (user.length == 0) {
-                res.status(401).json({
-                    message: "Login unsuccessful",
-                    error: "User not found",
-                });
-            }
-            else {
-                res.status(200).json({
-                    message: "Login successful",
-                    user,
-                });
-            }
-        }
-        catch (error) {
-            res.status(400).json({
-                message: "An error occurred",
-                error: error.message,
-            });
-        }
-    });
-}
 module.exports = {
-    create,
-    verify
+    create
 };

@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const controller = require('../controllers/user.controller');
-// POST new users into Users table
+// POST new albums into Albums table
 router.post('/add', controller.create);
-//Verify user login information
-router.get('/verify', controller.verify);
+//Get all album information for a single user
+router.get('/', controller.verify);
 module.exports = router;

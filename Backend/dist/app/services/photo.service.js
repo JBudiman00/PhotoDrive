@@ -13,25 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_service_1 = __importDefault(require("./db.service"));
-//Hash function to protect code in database
-const cyrb53 = (str, seed = 0) => {
-    let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
-    for (let i = 0, ch; i < str.length; i++) {
-        ch = str.charCodeAt(i);
-        h1 = Math.imul(h1 ^ ch, 2654435761);
-        h2 = Math.imul(h2 ^ ch, 1597334677);
-    }
-    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
-    h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
-    h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-    return 4294967296 * (2097151 & h2) + (h1 >>> 0);
-};
-function create(userInfo) {
+function create(photoInfo, filename) {
     return __awaiter(this, void 0, void 0, function* () {
-        const result = yield db_service_1.default.query(`INSERT INTO Users (name, passwordhash, email) 
+        const result = yield db_service_1.default.query(`INSERT INTO Photos (img, img_name, user_id) 
         VALUES (?, ?, ?)`, [
-            userInfo.name, cyrb53(userInfo.password), userInfo.email
+            filename, photoInfo.img_name, photoInfo.user_id
         ]);
         let message = 'Error in creating user';
         if (result.affectedRows) {
@@ -40,17 +26,6 @@ function create(userInfo) {
         return { message };
     });
 }
-function verify(userInfo) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const result = yield db_service_1.default.query(`SELECT *
-        FROM Users
-        WHERE email = ? AND passwordhash = ?`, [
-            userInfo.email, cyrb53(userInfo.password)
-        ]);
-        return result;
-    });
-}
 module.exports = {
-    create,
-    verify
+    create
 };
