@@ -21,6 +21,32 @@ async function create(req: any, res: Response, next: Function) {
   }
 }
 
+async function find(req: any, res: Response, next: Function) {
+  try {
+    res.json(await photoServices.find(req.params.user_id));
+  } catch (err: any) {
+    //Catchall error
+    if(err instanceof Error){
+        console.log(err);
+    }
+    next(err);
+  }
+}
+
+async function del(req: any, res: Response, next: Function) {
+  try {
+    res.json(await photoServices.del(req.params.img_id));
+  } catch (err: any) {
+    //Catchall error
+    if(err instanceof Error){
+        console.log(err);
+    }
+    next(err);
+  }
+}
+
 module.exports = {
-  create
+  create,
+  find,
+  del
 };

@@ -9,17 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const userServices = require('../services/user.service');
-function create(req, res, next) {
+const albumServices = require('../services/album.service');
+function find(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.json(yield userServices.create(req.body));
+            res.json(yield albumServices.find(req.params.user_id));
         }
         catch (err) {
-            //Handle error if email already exists in database
-            if (err.code === 'ER_DUP_ENTRY') {
-                res.send({ message: "Account already exists" });
-            }
             //Catchall error
             if (err instanceof Error) {
                 console.log(err.stack);
@@ -29,32 +25,36 @@ function create(req, res, next) {
         }
     });
 }
-function verify(req, res, next) {
+function create(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const user = yield userServices.verify(req.body);
-            if (user.length == 0) {
-                res.status(401).json({
-                    message: "Login unsuccessful",
-                    error: "User not found",
-                });
-            }
-            else {
-                res.status(200).json({
-                    message: "Login successful",
-                    user,
-                });
-            }
+            res.json(yield albumServices.create(req.body));
         }
-        catch (error) {
-            res.status(400).json({
-                message: "An error occurred",
-                error: error.message,
-            });
+        catch (err) {
+            //Catchall error
+            if (err instanceof Error) {
+                console.log(err.stack);
+            }
+            next(err);
+        }
+    });
+}
+function del(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.json(yield albumServices.del(req.params.album_id));
+        }
+        catch (err) {
+            //Catchall error
+            if (err instanceof Error) {
+                console.log(err.stack);
+            }
+            next(err);
         }
     });
 }
 module.exports = {
+    find,
     create,
-    verify
+    del
 };

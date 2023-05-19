@@ -31,6 +31,36 @@ function create(req, res, next) {
         }
     });
 }
+function find(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.json(yield photoServices.find(req.params.user_id));
+        }
+        catch (err) {
+            //Catchall error
+            if (err instanceof Error) {
+                console.log(err);
+            }
+            next(err);
+        }
+    });
+}
+function del(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.json(yield photoServices.del(req.params.img_id));
+        }
+        catch (err) {
+            //Catchall error
+            if (err instanceof Error) {
+                console.log(err);
+            }
+            next(err);
+        }
+    });
+}
 module.exports = {
-    create
+    create,
+    find,
+    del
 };

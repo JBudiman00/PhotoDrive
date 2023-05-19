@@ -23,7 +23,39 @@ async function create(photoInfo: postPhoto, filename: String){
 
     return {message};
 }
+async function find(user_id: String){
+    const result: any = await db.query(
+        `SELECT *
+        FROM Photos
+        WHERE user_id = ?`, 
+        [
+            user_id
+        ]
+    );
+
+    return result;
+}
+
+async function del(img_id: String){
+    const result: any = await db.query(
+        `DELETE FROM Photos
+        WHERE img_id = ?`, 
+        [
+            img_id
+        ]
+    );
+
+    let message = "Image unable to be deleted";
+
+    if (result.affectedRows) {
+        message = 'Image successfully deleted';
+    }
+
+    return {message};
+}
 
 module.exports = {
-    create
+    create,
+    find,
+    del
 }

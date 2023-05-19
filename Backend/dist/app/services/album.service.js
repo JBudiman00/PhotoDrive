@@ -13,40 +13,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_service_1 = __importDefault(require("./db.service"));
-function create(photoInfo, filename) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const result = yield db_service_1.default.query(`INSERT INTO Photos (img, img_name, user_id) 
-        VALUES (?, ?, ?)`, [
-            filename, photoInfo.img_name, photoInfo.user_id
-        ]);
-        let message = 'Error in creating user';
-        if (result.affectedRows) {
-            message = 'User created successfully';
-        }
-        return { message };
-    });
-}
 function find(user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield db_service_1.default.query(`SELECT *
-        FROM Photos
+        FROM Albums
         WHERE user_id = ?`, [
             user_id
         ]);
         return result;
     });
 }
-function del(img_id) {
+//Need to include insertion into albumphotos also
+function create(albumInfo) {
     return __awaiter(this, void 0, void 0, function* () {
-        const result = yield db_service_1.default.query(`DELETE FROM Photos
-        WHERE img_id = ?`, [
-            img_id
-        ]);
-        let message = "Image unable to be deleted";
-        if (result.affectedRows) {
-            message = 'Image successfully deleted';
+        try {
+            const result = yield db_service_1.default.query(`INSERT INTO Albums (album_name, user_id)
+            VALUES(?, ?);`, [
+                albumInfo.album_name, albumInfo.user_id
+            ]);
+            return { "album_id": result.insertId };
         }
-        return { message };
+        catch (err) {
+            return err;
+        }
+    });
+}
+function del(album_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield db_service_1.default.query(`DELETE FROM Albums 
+        WHERE album_id = ?`, [
+            album_id
+        ]);
+        return { message: "Album successfully deleted" };
     });
 }
 module.exports = {

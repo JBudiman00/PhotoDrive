@@ -8,6 +8,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const bodyParser = require('body-parser');
 const userRoute = require('./app/routes/user.route');
 const photoRoute = require('./app/routes/photo.route');
+const albumRoute = require('./app/routes/album.route');
 dotenv_1.default.config();
 const port = process.env.PORT;
 const app = (0, express_1.default)();
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 });
 app.use('/user', userRoute);
 app.use('/photo', photoRoute);
+app.use('/album', albumRoute);
 // app.use('/programming-languages', programmingLanguagesRouter);
 // /* Error handler middleware */
 // app.use((err, req, res, next) => {

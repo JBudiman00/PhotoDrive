@@ -8,6 +8,7 @@ const router = express_1.default.Router();
 const controller = require('../controllers/photo.controller');
 const multer = require('multer');
 const path = require('path');
+//Get randomly generated storage path for new photos
 const storage = multer.diskStorage({
     destination: process.cwd() + '\\photos\\',
     filename: function (req, file, cb) {
@@ -16,6 +17,7 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage });
+//Function to generate GUIDs
 function generate_uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var uuid = Math.random() * 16 | 0, v = c == 'x' ? uuid : (uuid & 0x3 | 0x8);
@@ -25,7 +27,7 @@ function generate_uuidv4() {
 // POST new photos into photo table
 router.post('/add', upload.single('img'), controller.create);
 //Get all photo information for a single user
-// router.get('/', controller.verify)
-// //Get all photo information for a specific album
-// router.get('/:albumid', controller.verify)
+router.get('/:user_id', controller.find);
+//Delete photo by img_id
+router.delete('/delete/:img_id', controller.del);
 module.exports = router;

@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 const bodyParser = require('body-parser');
 const userRoute = require('./app/routes/user.route');
 const photoRoute = require('./app/routes/photo.route');
+const albumRoute = require('./app/routes/album.route');
 
 dotenv.config();
 const port = process.env.PORT;
@@ -21,6 +22,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/user', userRoute);
 app.use('/photo', photoRoute);
+app.use('/album', albumRoute);
 
 // app.use('/programming-languages', programmingLanguagesRouter);
 
