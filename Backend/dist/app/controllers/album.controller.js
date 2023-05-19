@@ -53,8 +53,38 @@ function del(req, res, next) {
         }
     });
 }
+function addPhoto(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.json(yield albumServices.addPhoto(req.body));
+        }
+        catch (err) {
+            //Catchall error
+            if (err instanceof Error) {
+                console.log(err.stack);
+            }
+            next(err);
+        }
+    });
+}
+function delPhoto(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.json(yield albumServices.delPhoto(req.body));
+        }
+        catch (err) {
+            //Catchall error
+            if (err instanceof Error) {
+                console.log(err.stack);
+            }
+            next(err);
+        }
+    });
+}
 module.exports = {
     find,
     create,
-    del
+    del,
+    addPhoto,
+    delPhoto
 };

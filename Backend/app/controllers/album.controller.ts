@@ -40,8 +40,36 @@ async function del(req: Request, res: Response, next: Function) {
   }
 }
 
+async function addPhoto(req: Request, res: Response, next: Function) {
+  try {
+    res.json(await albumServices.addPhoto(req.body));
+  } catch (err: any) {
+    //Catchall error
+    if(err instanceof Error){
+        console.log(err.stack);
+    }
+ 
+    next(err);
+  }
+}
+
+async function delPhoto(req: Request, res: Response, next: Function) {
+  try {
+    res.json(await albumServices.delPhoto(req.body));
+  } catch (err: any) {
+    //Catchall error
+    if(err instanceof Error){
+        console.log(err.stack);
+    }
+ 
+    next(err);
+  }
+}
+
 module.exports = {
   find,
   create,
-  del
+  del,
+  addPhoto,
+  delPhoto
 };

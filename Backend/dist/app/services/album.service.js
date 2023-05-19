@@ -44,11 +44,43 @@ function del(album_id) {
         WHERE album_id = ?`, [
             album_id
         ]);
-        return { message: "Album successfully deleted" };
+        let message = "Album unable to be deleted";
+        if (result.affectedRows) {
+            message = 'Album successfully deleted';
+        }
+        return { message };
+    });
+}
+function addPhoto(PAInfo) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield db_service_1.default.query(`INSERT IGNORE INTO PhotoAlbum(album_id, img_id) 
+        VALUES (?, ?)`, [
+            PAInfo.album_id, PAInfo.img_id
+        ]);
+        let message = "Unable to add Photo to album";
+        if (result.affectedRows) {
+            message = 'Photo successfuly added to album';
+        }
+        return { message };
+    });
+}
+function delPhoto(PAInfo) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield db_service_1.default.query(`DELETE FROM PhotoAlbum 
+        WHERE album_id = ? AND img_id = ?`, [
+            PAInfo.album_id, PAInfo.img_id
+        ]);
+        let message = "Unable to delete photo from album";
+        if (result.affectedRows) {
+            message = 'Photo successfuly removed from album';
+        }
+        return { message };
     });
 }
 module.exports = {
     create,
     find,
-    del
+    del,
+    addPhoto,
+    delPhoto
 };

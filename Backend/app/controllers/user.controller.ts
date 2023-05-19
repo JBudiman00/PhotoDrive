@@ -13,7 +13,6 @@ async function create(req: Request, res: Response, next: Function) {
     if(err instanceof Error){
         console.log(err.stack);
     }
-    //console.error(`Error while creating users`, err);
     next(err);
   }
 }
@@ -40,7 +39,31 @@ async function verify(req: Request, res: Response, next: Function) {
       }
 }
 
+async function addUser(req: Request, res: Response, next: Function) {
+  try {
+      res.json(await userServices.addUser(req.body));
+    } catch (error: any) {
+      res.status(400).json({
+          message: "Could not add user to album view-list",
+          error: error.message,
+      })
+    }
+}
+
+async function removeUser(req: Request, res: Response, next: Function) {
+  try {
+      res.json(await userServices.removeUser(req.body));
+    } catch (error: any) {
+      res.status(400).json({
+          message: "Could not remove user from album view-list",
+          error: error.message,
+      })
+    }
+}
+
 module.exports = {
   create,
-  verify
+  verify,
+  addUser,
+  removeUser
 };

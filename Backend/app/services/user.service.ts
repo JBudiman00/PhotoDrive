@@ -58,7 +58,49 @@ async function verify(userInfo: findUser){
     return result;
 }
 
+interface UserAlbum{
+    user_id: String,
+    album_id: String
+}
+async function addUser(UAInfo: UserAlbum){
+    const result: any = await db.query(
+        `INSERT INTO UserAlbum(user_id, album_id)
+        VALUES(?,?)`, 
+        [
+            UAInfo.user_id, UAInfo.album_id
+        ]
+    );
+
+    let message = 'Could not add user to album view-list';
+
+    if (result.affectedRows) {
+        message = 'User succesfully added to album view-list';
+    }
+
+    return {message};
+}
+
+async function removeUser(UAInfo: UserAlbum){
+    const result: any = await db.query(
+        `DELETE FROM UserAlbum
+        WHERE user_id = ? AND album_id=?`, 
+        [
+            UAInfo.user_id, UAInfo.album_id
+        ]
+    );
+
+    let message = 'Could not remove user from album view-list';
+
+    if (result.affectedRows) {
+        message = 'User succesfully removed from album view-list';
+    }
+
+    return {message};
+}
+
 module.exports = {
     create,
-    verify
+    verify,
+    addUser,
+    removeUser
 }

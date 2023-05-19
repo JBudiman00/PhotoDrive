@@ -24,7 +24,6 @@ function create(req, res, next) {
             if (err instanceof Error) {
                 console.log(err.stack);
             }
-            //console.error(`Error while creating users`, err);
             next(err);
         }
     });
@@ -54,7 +53,35 @@ function verify(req, res, next) {
         }
     });
 }
+function addUser(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.json(yield userServices.addUser(req.body));
+        }
+        catch (error) {
+            res.status(400).json({
+                message: "Could not add user to album view-list",
+                error: error.message,
+            });
+        }
+    });
+}
+function removeUser(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.json(yield userServices.removeUser(req.body));
+        }
+        catch (error) {
+            res.status(400).json({
+                message: "Could not remove user from album view-list",
+                error: error.message,
+            });
+        }
+    });
+}
 module.exports = {
     create,
-    verify
+    verify,
+    addUser,
+    removeUser
 };
