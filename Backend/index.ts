@@ -4,10 +4,13 @@ const bodyParser = require('body-parser');
 const userRoute = require('./app/routes/user.route');
 const photoRoute = require('./app/routes/photo.route');
 const albumRoute = require('./app/routes/album.route');
+var cors = require('cors')
+require('./app/utils/auth');
 
 dotenv.config();
 const port = process.env.PORT;
 const app = express();
+app.use(cors())
 
 app.use(bodyParser.json());
 app.use(

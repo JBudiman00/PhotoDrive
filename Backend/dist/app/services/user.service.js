@@ -33,19 +33,27 @@ function create(userInfo) {
         VALUES (?, ?, ?)`, [
             userInfo.name, cyrb53(userInfo.password), userInfo.email
         ]);
-        let message = 'Error in creating user';
-        if (result.affectedRows) {
-            message = 'User created successfully';
-        }
-        return { message };
+        return result;
     });
 }
-function verify(userInfo) {
+//Verify user email in database
+function verifyEmail(email) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield db_service_1.default.query(`SELECT *
+            FROM Users
+            WHERE email = ?`, [
+            email
+        ]);
+        return result;
+    });
+}
+//Verify password in database
+function verifyPassword(email, pw) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield db_service_1.default.query(`SELECT *
         FROM Users
         WHERE email = ? AND passwordhash = ?`, [
-            userInfo.email, cyrb53(userInfo.password)
+            email, cyrb53(pw)
         ]);
         return result;
     });
@@ -78,7 +86,8 @@ function removeUser(UAInfo) {
 }
 module.exports = {
     create,
-    verify,
+    verifyEmail,
+    verifyPassword,
     addUser,
     removeUser
 };

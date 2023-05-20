@@ -30,32 +30,34 @@ async function create(userInfo: postUser){
             userInfo.name, cyrb53(userInfo.password), userInfo.email
         ]
     );
-        
-    let message = 'Error in creating user';
 
-    if (result.affectedRows) {
-        message = 'User created successfully';
-    }
-
-    return {message};
+    return result;
 }
 
-//Verify user login in database
-interface findUser{
-    email: String,
-    password: String,
+//Verify user email in database
+async function verifyEmail(email: String){
+        const result: any = await db.query(
+            `SELECT *
+            FROM Users
+            WHERE email = ?`, 
+            [
+                email
+            ]
+        )
+    return result;
 }
-async function verify(userInfo: findUser){
+
+//Verify password in database
+async function verifyPassword(email: String, pw: String){
     const result: any = await db.query(
         `SELECT *
         FROM Users
         WHERE email = ? AND passwordhash = ?`, 
         [
-            userInfo.email, cyrb53(userInfo.password)
+            email, cyrb53(pw)
         ]
-    );
-
-    return result;
+    )
+return result;
 }
 
 interface UserAlbum{
@@ -100,7 +102,8 @@ async function removeUser(UAInfo: UserAlbum){
 
 module.exports = {
     create,
-    verify,
+    verifyEmail,
+    verifyPassword,
     addUser,
     removeUser
 }

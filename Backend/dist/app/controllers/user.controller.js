@@ -10,6 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const userServices = require('../services/user.service');
+//Functions for token
+const { createAccessToken, createRefreshToken, sendAccessToken, sendRefreshToken, } = require("../utils/token");
 function create(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -32,22 +34,21 @@ function verify(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const user = yield userServices.verify(req.body);
-            if (user.length == 0) {
+            if (user[0].verification === 1) {
+                const accessToken = createAccessToken(user.email);
+                const refreshToken = createRefreshToken(user.email);
+                //Put refresh token into database
+            }
+            else {
                 res.status(401).json({
                     message: "Login unsuccessful",
                     error: "User not found",
                 });
             }
-            else {
-                res.status(200).json({
-                    message: "Login successful",
-                    user,
-                });
-            }
         }
         catch (error) {
-            res.status(400).json({
-                message: "An error occurred",
+            res.status(500).json({
+                message: "Error signing in",
                 error: error.message,
             });
         }

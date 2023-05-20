@@ -29,8 +29,9 @@ function create(photoInfo, filename) {
 function find(user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield db_service_1.default.query(`SELECT *
-        FROM Photos
-        WHERE user_id = ?`, [
+        FROM Photos, PhotoAlbum
+        WHERE Photos.user_id = ?
+        AND PhotoAlbum.img_id = Photos.img_id`, [
             user_id
         ]);
         return result;

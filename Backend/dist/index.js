@@ -9,9 +9,12 @@ const bodyParser = require('body-parser');
 const userRoute = require('./app/routes/user.route');
 const photoRoute = require('./app/routes/photo.route');
 const albumRoute = require('./app/routes/album.route');
+var cors = require('cors');
+require('./app/utils/auth');
 dotenv_1.default.config();
 const port = process.env.PORT;
 const app = (0, express_1.default)();
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true,

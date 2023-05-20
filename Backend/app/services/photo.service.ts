@@ -26,8 +26,9 @@ async function create(photoInfo: postPhoto, filename: String){
 async function find(user_id: String){
     const result: any = await db.query(
         `SELECT *
-        FROM Photos
-        WHERE user_id = ?`, 
+        FROM Photos, PhotoAlbum
+        WHERE Photos.user_id = ?
+        AND PhotoAlbum.img_id = Photos.img_id`, 
         [
             user_id
         ]
