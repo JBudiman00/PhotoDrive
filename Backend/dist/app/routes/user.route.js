@@ -36,7 +36,8 @@ router.post('/login', (req, res, next) => __awaiter(void 0, void 0, void 0, func
                 if (error)
                     return next(error);
                 const body = { id: user[0].user_id, email: user[0].email };
-                const token = jwt.sign({ user: body }, secretKey);
+                //Create access token to expire in 15 minutes
+                const token = jwt.sign({ user: body }, secretKey, { expiresIn: "15m" });
                 return res.json({ token });
             }));
         }
