@@ -30,11 +30,7 @@ function create(userInfo) {
             return { message: "User successfully created" };
         }
         catch (e) {
-            //Error if user with email already exists
-            if (e.code == "P2002") {
-                return { message: "Account already created with this email address" };
-            }
-            return e;
+            throw e;
         }
     });
 }

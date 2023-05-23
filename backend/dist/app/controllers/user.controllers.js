@@ -17,7 +17,7 @@ const bcrypt_1 = __importDefault(require("../utils/bcrypt"));
 function get(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.json(yield userServices.read(req.params.user_id));
+            res.status(200).json(yield userServices.read(req.params.user_id));
         }
         catch (err) {
             console.error(`Error while getting user info`, err.message);
@@ -34,10 +34,14 @@ function create(req, res, next) {
                 passwordHash: pw,
                 name: req.body.name
             };
-            res.json(yield userServices.create(user));
+            res.status(200).json(yield userServices.create(user));
         }
         catch (err) {
-            console.error(`Error while creating user`, err.message);
+            //Error if user with email already exists
+            if (err.code == "P2002") {
+                res.status(409).json({ message: "Account already created with this email address" });
+            }
+            res.status(500).json({ error: err.message });
             next(err);
         }
     });

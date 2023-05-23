@@ -3,7 +3,7 @@ import getBcrypt from '../utils/bcrypt';
 
 async function get(req: any, res: any, next: any) {
   try {
-      res.json(await userServices.read(req.params.user_id));
+    res.status(200).json(await userServices.read(req.params.user_id));
   } catch (err: any) {
       console.error(`Error while getting user info`, err.message);
       next(err);
@@ -18,9 +18,13 @@ async function create(req: any, res: any, next: any) {
         passwordHash: pw,
         name: req.body.name
     }
-    res.json(await userServices.create(user));
+    res.status(200).json(await userServices.create(user));
   } catch (err: any) {
-    console.error(`Error while creating user`, err.message);
+    //Error if user with email already exists
+    if(err.code == "P2002"){
+      res.status(409).json({message: "Account already created with this email address"})
+  } 
+    res.status(500).json({error: err.message});
     next(err);
   }
 }
