@@ -19,7 +19,6 @@ model Users {
   photos       Photos[]
   albums       Albums[]
   useralbums   UserAlbums[]
-  photoalbums  PhotoAlbums[]
 }
 
 model Photos {
@@ -33,28 +32,29 @@ model Photos {
 }
 
 model Albums {
-  album_id   Int    @id @default(autoincrement())
+  album_id   Int      @id @default(autoincrement())
   date       DateTime @default(now())
   album_name String   @db.VarChar(255)
   user       Users    @relation(fields: [user_id], references: [user_id])
   user_id    Int
-  useralbums   UserAlbums[]    
+  useralbums   UserAlbums[]  
+  photoalbums  PhotoAlbums[]  
 }
 
 model UserAlbums{
   album    Albums @relation(fields: [album_id], references: [album_id])
   album_id Int 
-  user     Users    @relation(fields: [user_id], references: [user_id])
+  user     Users  @relation(fields: [user_id], references: [user_id])
   user_id  Int    
   
   @@id([album_id, user_id])
 }
 
 model PhotoAlbums{
-  img    Photos @relation(fields: [img_id], references: [img_id])
-  img_id Int 
-  user     Users    @relation(fields: [user_id], references: [user_id])
-  user_id  Int    
+  img      Photos @relation(fields: [img_id], references: [img_id])
+  img_id   Int 
+  album    Albums @relation(fields: [album_id], references: [album_id])
+  album_id Int    
   
-  @@id([img_id, user_id])
+  @@id([img_id, album_id])
 }

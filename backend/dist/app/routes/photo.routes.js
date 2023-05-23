@@ -13,4 +13,9 @@ router.post('/', upload.single('img'), photoController.create);
 router.put('/:img_id', photoController.update);
 //DELETE photos
 router.delete('/:img_id', photoController.remove);
+//Relationship endpoints
+//POST Add photo to album
+router.post('/:img_id/album/:album_id', photoController.photoalbumCreate);
+//DELETE photo from album 
+router.delete('/:img_id/album/:album_id', photoController.photoalbumDelete);
 module.exports = router;

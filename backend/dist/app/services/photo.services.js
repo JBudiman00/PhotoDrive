@@ -19,6 +19,9 @@ function read(user_id) {
             where: {
                 user_id: +user_id
             },
+            include: {
+                photoalbums: true
+            }
         });
         return user;
     });
@@ -73,9 +76,46 @@ function remove(img_id, album_name) {
         }
     });
 }
+//Relationship endpoints
+function photoAlbumCreate(img_id, album_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield client_1.default.photoAlbums.create({
+                data: {
+                    img_id: +img_id,
+                    album_id: +album_id
+                }
+            });
+            return { message: "Photo successfully added to Album" };
+        }
+        catch (e) {
+            throw e;
+        }
+    });
+}
+function photoAlbumDelete(img_id, album_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield client_1.default.photoAlbums.delete({
+                where: {
+                    img_id_album_id: {
+                        img_id: +img_id,
+                        album_id: +album_id
+                    }
+                }
+            });
+            return { message: "Photo successfully removed from Album" };
+        }
+        catch (e) {
+            throw e;
+        }
+    });
+}
 module.exports = {
     read,
     create,
     update,
-    remove
+    remove,
+    photoAlbumCreate,
+    photoAlbumDelete
 };

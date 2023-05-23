@@ -51,9 +51,41 @@ async function remove(req: any, res: any, next: any) {
   }
 }
 
+//Relationship endpoint
+async function photoalbumCreate(req: any, res: any, next: any) {
+  try {
+    res.status(201).json(await photoServices.photoAlbumCreate(req.params.img_id, req.params.album_id));
+  } catch (err: any) {
+    //Handle case where user_id doesn't exist
+    if(err.code == "P2002"){
+        res.status(404).json({message: "Relationship already established"})
+      } else if(err.code == "P2003"){
+        res.status(404).json({message: "Unable to find ids required to establish relationship in database"})
+      }
+    
+    next(err);
+  }
+}
+
+async function photoalbumDelete(req: any, res: any, next: any) {
+  try {
+    res.status(200).json(await photoServices.photoAlbumDelete(req.params.img_id, req.params.album_id));
+  } catch (err: any) {
+    //Handle case where user_id doesn't exist
+    if(err.code == "P2025"){
+        res.status(404).json({message: "Unable to find ids required to remove relationship in database"})
+      } else{
+        res.status(404).json({message: err})
+      }
+    next(err);
+  }
+}
+
 module.exports = {
   get,
   create,
   update,
-  remove
+  remove,
+  photoalbumCreate,
+  photoalbumDelete
 };

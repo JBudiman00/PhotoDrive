@@ -6,6 +6,9 @@ async function read(user_id: number){
         where: {
             user_id: +user_id
         },
+        include: {
+            photoalbums: true
+        }
         })
     return user
 }
@@ -54,9 +57,42 @@ async function remove(img_id: number, album_name: string){
     }
 }
 
+//Relationship endpoints
+async function photoAlbumCreate(img_id: number, album_id: number){
+    try {
+        await prisma.photoAlbums.create({
+            data: {
+                img_id: +img_id,
+                album_id: +album_id
+            }
+        })
+        return {message: "Photo successfully added to Album"};
+    } catch(e: any) {
+        throw e
+    }
+}
+
+async function photoAlbumDelete(img_id: number, album_id: number){
+    try {
+        await prisma.photoAlbums.delete({
+            where: {
+                img_id_album_id:{
+                    img_id: +img_id,
+                    album_id: +album_id
+                }
+            }
+        })
+        return {message: "Photo successfully removed from Album"};
+    } catch(e: any) {
+        throw e
+    }
+}
+
 module.exports = {
     read,
     create,
     update,
-    remove
+    remove,
+    photoAlbumCreate,
+    photoAlbumDelete
   };

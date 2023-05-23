@@ -70,9 +70,46 @@ function remove(req, res, next) {
         }
     });
 }
+//Relationship endpoint
+function photoalbumCreate(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.status(201).json(yield photoServices.photoAlbumCreate(req.params.img_id, req.params.album_id));
+        }
+        catch (err) {
+            //Handle case where user_id doesn't exist
+            if (err.code == "P2002") {
+                res.status(404).json({ message: "Relationship already established" });
+            }
+            else if (err.code == "P2003") {
+                res.status(404).json({ message: "Unable to find ids required to establish relationship in database" });
+            }
+            next(err);
+        }
+    });
+}
+function photoalbumDelete(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.status(200).json(yield photoServices.photoAlbumDelete(req.params.img_id, req.params.album_id));
+        }
+        catch (err) {
+            //Handle case where user_id doesn't exist
+            if (err.code == "P2025") {
+                res.status(404).json({ message: "Unable to find ids required to remove relationship in database" });
+            }
+            else {
+                res.status(404).json({ message: err });
+            }
+            next(err);
+        }
+    });
+}
 module.exports = {
     get,
     create,
     update,
-    remove
+    remove,
+    photoalbumCreate,
+    photoalbumDelete
 };
