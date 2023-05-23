@@ -19,6 +19,13 @@ function read(user_id) {
             where: {
                 user_id: +user_id
             },
+            include: {
+                useralbums: {
+                    select: {
+                        album_id: true
+                    }
+                }
+            }
         });
         return user;
     });

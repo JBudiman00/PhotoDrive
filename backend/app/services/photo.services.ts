@@ -6,10 +6,19 @@ async function read(user_id: number){
         where: {
             user_id: +user_id
         },
-        include: {
-            photoalbums: true
+        select: {
+            img_id: true,
+            img: true,
+            date: true,
+            img_name: true,
+            user_id: true,
+            photoalbums: {
+                select:{
+                    album_id: true
+                }
+            }
         }
-        })
+    })
     return user
 }
 

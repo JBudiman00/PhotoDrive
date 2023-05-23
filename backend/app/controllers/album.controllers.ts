@@ -54,11 +54,45 @@ async function remove(req: any, res: any, next: any) {
   }
 }
 
+async function albumuserCreate(req: any, res: any, next: any) {
+  try {
+    res.status(200).json(await albumServices.albumUserCreate(req.params.album_id, req.params.user_id));
+  } catch (err: any) {
+    //Handle case where user_id doesn't exist
+    if(err.code == "P2003"){
+      res.status(404).json({message: "User ID doesn't exist"})
+    } else if(err.code == "P2002"){
+      res.status(409).json({message: "Relationship already exists in database"})
+    } else{
+      //Unknown error
+      res.status(500).json({error: err.code})
+      next(err);
+    }
+  }
+}
+
+async function albumuserDelete(req: any, res: any, next: any) {
+  try {
+    res.status(200).json(await albumServices.albumUserDelete(req.params.album_id, req.params.user_id));
+  } catch (err: any) {
+    //Handle case where user_id doesn't exist
+    if(err.code == "P2003"){
+        res.status(404).json({message: "User ID doesn't exist"})
+    } else{
+        //Unknown error
+        res.status(500).json({error: err.message})
+        next(err);
+    }
+  }
+}
+
 module.exports = {
   get,
   create,
   update,
-  remove
+  remove,
+  albumuserCreate,
+  albumuserDelete
 };
 
 export{}

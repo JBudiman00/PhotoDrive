@@ -48,9 +48,41 @@ async function remove(album_id: number, album_name: string){
     }
 }
 
+async function albumUserCreate(album_id: number, user_id: number){
+    try {
+        await prisma.userAlbums.create({
+            data: {
+                album_id: +album_id,
+                user_id: +user_id
+            }
+        })
+        return {message: "User successfully added to album"};
+    } catch(e: any) {
+        throw e
+    }
+}
+
+async function albumUserDelete(album_id: number, user_id: number){
+    try {
+        await prisma.userAlbums.delete({
+            where: {
+                album_id_user_id: {
+                    album_id: +album_id,
+                    user_id: +user_id
+                }
+            }
+        })
+        return {message: "User successfully deleted from album"};
+    } catch(e: any) {
+        throw e
+    }
+}
+
 module.exports = {
     read,
     create,
     update,
-    remove
+    remove,
+    albumUserCreate,
+    albumUserDelete
   };

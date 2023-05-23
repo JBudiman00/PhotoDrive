@@ -75,9 +75,50 @@ function remove(req, res, next) {
         }
     });
 }
+function albumuserCreate(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.status(200).json(yield albumServices.albumUserCreate(req.params.album_id, req.params.user_id));
+        }
+        catch (err) {
+            //Handle case where user_id doesn't exist
+            if (err.code == "P2003") {
+                res.status(404).json({ message: "User ID doesn't exist" });
+            }
+            else if (err.code == "P2002") {
+                res.status(409).json({ message: "Relationship already exists in database" });
+            }
+            else {
+                //Unknown error
+                res.status(500).json({ error: err.code });
+                next(err);
+            }
+        }
+    });
+}
+function albumuserDelete(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.status(200).json(yield albumServices.albumUserDelete(req.params.album_id, req.params.user_id));
+        }
+        catch (err) {
+            //Handle case where user_id doesn't exist
+            if (err.code == "P2003") {
+                res.status(404).json({ message: "User ID doesn't exist" });
+            }
+            else {
+                //Unknown error
+                res.status(500).json({ error: err.message });
+                next(err);
+            }
+        }
+    });
+}
 module.exports = {
     get,
     create,
     update,
-    remove
+    remove,
+    albumuserCreate,
+    albumuserDelete
 };

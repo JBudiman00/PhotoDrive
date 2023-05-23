@@ -67,9 +67,45 @@ function remove(album_id, album_name) {
         }
     });
 }
+function albumUserCreate(album_id, user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield client_1.default.userAlbums.create({
+                data: {
+                    album_id: +album_id,
+                    user_id: +user_id
+                }
+            });
+            return { message: "User successfully added to album" };
+        }
+        catch (e) {
+            throw e;
+        }
+    });
+}
+function albumUserDelete(album_id, user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield client_1.default.userAlbums.delete({
+                where: {
+                    album_id_user_id: {
+                        album_id: +album_id,
+                        user_id: +user_id
+                    }
+                }
+            });
+            return { message: "User successfully deleted from album" };
+        }
+        catch (e) {
+            throw e;
+        }
+    });
+}
 module.exports = {
     read,
     create,
     update,
-    remove
+    remove,
+    albumUserCreate,
+    albumUserDelete
 };
