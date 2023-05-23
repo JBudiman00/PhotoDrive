@@ -8,15 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const albumServices = require('../services/album.services');
+const photoServices = require('../services/photo.services');
 function get(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.status(200).json(yield albumServices.read(req.params.user_id));
+            res.status(200).json(yield photoServices.read(req.params.user_id));
         }
         catch (err) {
-            console.error(`Error while getting album info`, err.message);
+            console.error(`Error while getting photo info`, err.message);
             next(err);
         }
     });
@@ -24,31 +23,27 @@ function get(req, res, next) {
 function create(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.status(200).json(yield albumServices.create(req.body));
+            res.status(200).json(yield photoServices.create(req.body, req.file.destination + req.file.filename));
         }
         catch (err) {
             //Handle case where user_id doesn't exist
             if (err.code == "P2003") {
                 res.status(404).json({ message: "User ID doesn't exist" });
             }
-            else {
-                //Unknown error
-                res.status(500).json({ error: err.message });
-                next(err);
-            }
+            next(err);
         }
     });
 }
 function update(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield albumServices.update(req.params.album_id, req.body.album_name);
+            yield photoServices.update(req.params.img_id, req.body.img_name);
             res.status(204).json();
         }
         catch (err) {
             //Handle case where album_id doesn't exist
             if (err.code == "P2025") {
-                res.status(404).json({ message: "Album ID doesn't exist" });
+                res.status(404).json({ message: "Image ID doesn't exist" });
             }
             else {
                 //Unknown error
@@ -61,11 +56,11 @@ function update(req, res, next) {
 function remove(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.status(200).json(yield albumServices.remove(req.params.album_id));
+            res.status(200).json(yield photoServices.remove(req.params.img_id));
         }
         catch (err) {
             if (err.code == "P2025") {
-                res.status(404).json({ message: "Album ID doesn't exist" });
+                res.status(404).json({ message: "Image ID doesn't exist" });
             }
             else {
                 //Unknown error

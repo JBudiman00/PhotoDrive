@@ -8,6 +8,7 @@ const express_1 = __importDefault(require("express"));
 const port = process.env.PORT || 8000;
 const userRoutes = require('./app/routes/user.routes');
 const albumRoutes = require('./app/routes/album.routes');
+const photoRoutes = require('./app/routes/photo.routes');
 const app = (0, express_1.default)();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -20,4 +21,5 @@ app.get('/', (req, res) => {
 //Routes
 app.use('/users', userRoutes);
 app.use('/albums', albumRoutes);
+app.use('/photos', photoRoutes);
 const server = app.listen(port, () => console.log(`Server ready at: http://localhost:${port}`));

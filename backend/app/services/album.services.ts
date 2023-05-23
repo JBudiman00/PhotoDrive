@@ -42,7 +42,7 @@ async function remove(album_id: number, album_name: string){
                 album_id: +album_id
             }
         })
-        return {message: "Album deleted successfully deleted"};
+        return {message: "Album successfully deleted"};
     } catch(e: any) {
         throw e
     }

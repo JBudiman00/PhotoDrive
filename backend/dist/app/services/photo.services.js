@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = __importDefault(require("../models/client"));
 function read(user_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const user = yield client_1.default.albums.findMany({
+        const user = yield client_1.default.photos.findMany({
             where: {
                 user_id: +user_id
             },
@@ -23,44 +23,50 @@ function read(user_id) {
         return user;
     });
 }
-function create(albumInfo) {
+function create(albumInfo, filedest) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield client_1.default.albums.create({ data: albumInfo });
-            return { message: "Album successfully created" };
+            yield client_1.default.photos.create({
+                data: {
+                    img_name: albumInfo.img_name,
+                    user_id: +albumInfo.user,
+                    img: filedest
+                }
+            });
+            return { message: "Photo successfully created" };
         }
         catch (e) {
             throw e;
         }
     });
 }
-function update(album_id, album_name) {
+function update(img_id, img_name) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield client_1.default.albums.update({
+            yield client_1.default.photos.update({
                 where: {
-                    album_id: +album_id
+                    img_id: +img_id
                 },
                 data: {
-                    album_name: album_name
+                    img_name: img_name
                 }
             });
-            return { message: "Album name successfully updated" };
+            return { message: "Image name successfully updated" };
         }
         catch (e) {
             throw e;
         }
     });
 }
-function remove(album_id, album_name) {
+function remove(img_id, album_name) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield client_1.default.albums.delete({
+            yield client_1.default.photos.delete({
                 where: {
-                    album_id: +album_id
+                    img_id: +img_id
                 }
             });
-            return { message: "Album successfully deleted" };
+            return { message: "Image successfully deleted" };
         }
         catch (e) {
             throw e;
