@@ -20,7 +20,7 @@ async function create(req: any, res: any, next: any) {
     }
     res.json(await userServices.create(user));
   } catch (err: any) {
-    console.error(`Error while creating programming language`, err.message);
+    console.error(`Error while creating user`, err.message);
     next(err);
   }
 }

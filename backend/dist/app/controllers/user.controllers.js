@@ -37,7 +37,7 @@ function create(req, res, next) {
             res.json(yield userServices.create(user));
         }
         catch (err) {
-            console.error(`Error while creating programming language`, err.message);
+            console.error(`Error while creating user`, err.message);
             next(err);
         }
     });

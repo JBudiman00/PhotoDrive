@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = __importDefault(require("../models/client"));
 function read(user_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const user = yield client_1.default.users.findUnique({
+        const user = yield client_1.default.albums.findMany({
             where: {
                 user_id: +user_id
             },
@@ -23,24 +23,53 @@ function read(user_id) {
         return user;
     });
 }
-function create(userInfo) {
+function create(albumInfo) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const user = yield client_1.default.users.create({ data: userInfo });
-            return { message: "User successfully created" };
+            yield client_1.default.albums.create({ data: albumInfo });
+            return { message: "Album successfully created" };
         }
         catch (e) {
-            //Error if user with email already exists
-            if (e.code == "P2002") {
-                return { message: "Account already created with this email address" };
-            }
-            return e;
+            throw e;
+        }
+    });
+}
+function update(album_id, album_name) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield client_1.default.albums.update({
+                where: {
+                    album_id: +album_id
+                },
+                data: {
+                    album_name: album_name
+                }
+            });
+            return { message: "Album name successfully updated" };
+        }
+        catch (e) {
+            throw e;
+        }
+    });
+}
+function remove(album_id, album_name) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield client_1.default.albums.delete({
+                where: {
+                    album_id: +album_id
+                }
+            });
+            return { message: "Album deleted successfully deleted" };
+        }
+        catch (e) {
+            throw e;
         }
     });
 }
 module.exports = {
     read,
     create,
-    // update,
-    // remove
+    update,
+    remove
 };

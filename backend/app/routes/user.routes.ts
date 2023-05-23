@@ -12,3 +12,4 @@ router.post('/', userController.create)
 //DELETE users
 
 module.exports = router;
+export{}

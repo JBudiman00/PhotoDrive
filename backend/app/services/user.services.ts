@@ -15,6 +15,7 @@ async function create(userInfo: Prisma.UsersCreateInput){
         const user = await prisma.users.create({data: userInfo})
         return {message: "User successfully created"};
     } catch(e: any) {
+        //Error if user with email already exists
         if(e.code == "P2002"){
             return {message: "Account already created with this email address"}
         } 

@@ -3,9 +3,8 @@ const bodyParser = require('body-parser');
 import express from 'express'
 const port = process.env.PORT || 8000
 const userRoutes = require('./app/routes/user.routes') 
+const albumRoutes = require('./app/routes/album.routes') 
 
-//Create prisma and epxress instances
-const prisma = new PrismaClient()
 const app = express()
 
 app.use(bodyParser.json());
@@ -21,8 +20,9 @@ app.get('/', (req, res) => {
     res.json({'message': 'ok'})
 })
 
-//ROutes
+//Routes
 app.use('/users', userRoutes)
+app.use('/albums', albumRoutes)
 
 const server = app.listen(port, () =>
   console.log(`Server ready at: http://localhost:${port}`)
