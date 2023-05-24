@@ -23,9 +23,10 @@ async function create(req: any, res: any, next: any) {
     //Error if user with email already exists
     if(err.code == "P2002"){
       res.status(409).json({message: "Account already created with this email address"})
-  } 
-    res.status(500).json({error: err.message});
-    next(err);
+    } else{
+      res.status(500).json({error: err.message});
+      next(err);
+    }
   }
 }
 

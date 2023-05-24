@@ -19,11 +19,12 @@ async function create(albumInfo: Prisma.AlbumsCreateInput){
     }
 }
 
-async function update(album_id: number, album_name: string){
+async function update(album_id: number, album_name: string, user_id: number){
     try {
         await prisma.albums.update({
             where: {
-                album_id: +album_id
+                album_id: +album_id,
+                user_id: +user_id
             },
             data: {
                 album_name: album_name
@@ -35,11 +36,12 @@ async function update(album_id: number, album_name: string){
     }
 }
 
-async function remove(album_id: number, album_name: string){
+async function remove(album_id: number, user_id: number){
     try {
         await prisma.albums.delete({
             where: {
-                album_id: +album_id
+                album_id: +album_id,
+                user_id: +user_id
             }
         })
         return {message: "Album successfully deleted"};
@@ -78,11 +80,30 @@ async function albumUserDelete(album_id: number, user_id: number){
     }
 }
 
+async function verify(album_id: number, user_id: number){
+    try {
+        const query = await prisma.albums.findMany({
+            where: {
+                album_id: +album_id,
+                user_id: user_id
+                }
+        })
+        //Check if given user Id has the album Id
+        if(query.length == 0){
+            return false
+        }
+        return true
+    } catch(e: any) {
+        throw e
+    }
+}
+
 module.exports = {
     read,
     create,
     update,
     remove,
     albumUserCreate,
-    albumUserDelete
+    albumUserDelete,
+    verify
   };

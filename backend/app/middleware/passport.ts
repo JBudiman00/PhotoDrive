@@ -36,7 +36,8 @@ export const localStrategy = new LocalStrategy(async (username: string, password
 
 passport.use(new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    secretOrKey   : process.env.SECRET_KEY
+    secretOrKey   : process.env.SECRET_KEY,
+    expiresIn: process.env.EXPIRE
     },
     //JWTPayload when decoded is the user_id 
     function (jwtPayload: any, cb: any) {

@@ -35,13 +35,13 @@ function read(user_id) {
         return user;
     });
 }
-function create(albumInfo, filedest) {
+function create(albumInfo, filedest, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield client_1.default.photos.create({
                 data: {
                     img_name: albumInfo.img_name,
-                    user_id: +albumInfo.user,
+                    user_id: +user_id,
                     img: filedest
                 }
             });
@@ -52,12 +52,13 @@ function create(albumInfo, filedest) {
         }
     });
 }
-function update(img_id, img_name) {
+function update(img_id, img_name, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield client_1.default.photos.update({
                 where: {
-                    img_id: +img_id
+                    img_id: +img_id,
+                    user_id: +user_id
                 },
                 data: {
                     img_name: img_name
@@ -70,12 +71,13 @@ function update(img_id, img_name) {
         }
     });
 }
-function remove(img_id, album_name) {
+function remove(img_id, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield client_1.default.photos.delete({
                 where: {
-                    img_id: +img_id
+                    img_id: +img_id,
+                    user_id: +user_id
                 }
             });
             return { message: "Image successfully deleted" };
@@ -120,11 +122,38 @@ function photoAlbumDelete(img_id, album_id) {
         }
     });
 }
+function verify(album_id, img_id, user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const query = yield client_1.default.photos.findMany({
+                where: {
+                    img_id: +img_id,
+                    user_id: +user_id
+                }
+            });
+            const query1 = yield client_1.default.albums.findMany({
+                where: {
+                    album_id: +album_id,
+                    user_id: +user_id
+                }
+            });
+            //Check if given user Id has the img Id
+            if (query.length == 0 || query1.length == 0) {
+                return false;
+            }
+            return true;
+        }
+        catch (e) {
+            throw e;
+        }
+    });
+}
 module.exports = {
     read,
     create,
     update,
     remove,
     photoAlbumCreate,
-    photoAlbumDelete
+    photoAlbumDelete,
+    verify
 };

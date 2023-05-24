@@ -4,8 +4,8 @@ const express = require('express');
 const router = express.Router();
 const albumController = require('../controllers/album.controllers');
 //Basic CRUD operations
-//GET albums by user ID
-router.get('/:user_id', albumController.get);
+//GET albums (Bearer Authentication contains user_id)
+router.get('/', albumController.get);
 //POST albums
 router.post('/', albumController.create);
 //PUT albums (Can only update name)

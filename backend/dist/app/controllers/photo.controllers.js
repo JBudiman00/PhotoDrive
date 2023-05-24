@@ -13,7 +13,7 @@ const photoServices = require('../services/photo.services');
 function get(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.status(200).json(yield photoServices.read(req.params.user_id));
+            res.status(200).json(yield photoServices.read(req.user.userId));
         }
         catch (err) {
             console.error(`Error while getting photo info`, err.message);
@@ -24,7 +24,7 @@ function get(req, res, next) {
 function create(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.status(200).json(yield photoServices.create(req.body, req.file.destination + req.file.filename));
+            res.status(200).json(yield photoServices.create(req.body, req.file.destination + req.file.filename, req.user.userId));
         }
         catch (err) {
             //Handle case where user_id doesn't exist
@@ -38,13 +38,13 @@ function create(req, res, next) {
 function update(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield photoServices.update(req.params.img_id, req.body.img_name);
+            yield photoServices.update(req.params.img_id, req.body.img_name, req.user.userId);
             res.status(204).json();
         }
         catch (err) {
             //Handle case where album_id doesn't exist
             if (err.code == "P2025") {
-                res.status(404).json({ message: "Image ID doesn't exist" });
+                res.status(404).json({ message: "Image ID doesn't exist for this user" });
             }
             else {
                 //Unknown error
@@ -57,11 +57,11 @@ function update(req, res, next) {
 function remove(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.status(200).json(yield photoServices.remove(req.params.img_id));
+            res.status(200).json(yield photoServices.remove(req.params.img_id, req.user.userId));
         }
         catch (err) {
             if (err.code == "P2025") {
-                res.status(404).json({ message: "Image ID doesn't exist" });
+                res.status(404).json({ message: "Image ID doesn't exist for this user" });
             }
             else {
                 //Unknown error
@@ -75,6 +75,11 @@ function remove(req, res, next) {
 function photoalbumCreate(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            //Verify client request is valid for given album and photo
+            const result = yield photoServices.verify(req.params.album_id, req.params.img_id, req.user.userId);
+            if (result === false) {
+                throw "User does not own this album or photo";
+            }
             res.status(201).json(yield photoServices.photoAlbumCreate(req.params.img_id, req.params.album_id));
         }
         catch (err) {
@@ -85,6 +90,9 @@ function photoalbumCreate(req, res, next) {
             else if (err.code == "P2003") {
                 res.status(404).json({ message: "Unable to find ids required to establish relationship in database" });
             }
+            else {
+                res.status(500).json({ error: err });
+            }
             next(err);
         }
     });
@@ -92,6 +100,11 @@ function photoalbumCreate(req, res, next) {
 function photoalbumDelete(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            //Verify client request is valid for given album and photo
+            const result = yield photoServices.verify(req.params.album_id, req.params.img_id, req.user.userId);
+            if (result === false) {
+                throw "User does not own this album or photo";
+            }
             res.status(200).json(yield photoServices.photoAlbumDelete(req.params.img_id, req.params.album_id));
         }
         catch (err) {
@@ -112,5 +125,5 @@ module.exports = {
     update,
     remove,
     photoalbumCreate,
-    photoalbumDelete
+    photoalbumDelete,
 };

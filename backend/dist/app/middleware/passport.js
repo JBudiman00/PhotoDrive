@@ -47,7 +47,8 @@ exports.localStrategy = new passport_local_1.Strategy((username, password, done)
 }));
 passport_1.default.use(new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.SECRET_KEY
+    secretOrKey: process.env.SECRET_KEY,
+    expiresIn: process.env.EXPIRE
 }, 
 //JWTPayload when decoded is the user_id 
 function (jwtPayload, cb) {

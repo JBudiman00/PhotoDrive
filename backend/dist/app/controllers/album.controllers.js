@@ -13,7 +13,7 @@ const albumServices = require('../services/album.services');
 function get(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.status(200).json(yield albumServices.read(req.params.user_id));
+            res.status(200).json(yield albumServices.read(req.user.userId));
         }
         catch (err) {
             console.error(`Error while getting album info`, err.message);
@@ -24,7 +24,11 @@ function get(req, res, next) {
 function create(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.status(200).json(yield albumServices.create(req.body));
+            const album = {
+                album_name: req.body.album_name,
+                user_id: req.user.userId
+            };
+            res.status(200).json(yield albumServices.create(album));
         }
         catch (err) {
             //Handle case where user_id doesn't exist
@@ -42,13 +46,13 @@ function create(req, res, next) {
 function update(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield albumServices.update(req.params.album_id, req.body.album_name);
+            yield albumServices.update(req.params.album_id, req.body.album_name, req.user.userId);
             res.status(204).json();
         }
         catch (err) {
             //Handle case where album_id doesn't exist
             if (err.code == "P2025") {
-                res.status(404).json({ message: "Album ID doesn't exist" });
+                res.status(404).json({ message: "Album ID doesn't exist for this specific User ID" });
             }
             else {
                 //Unknown error
@@ -61,7 +65,7 @@ function update(req, res, next) {
 function remove(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.status(200).json(yield albumServices.remove(req.params.album_id));
+            res.status(200).json(yield albumServices.remove(req.params.album_id, req.user.userId));
         }
         catch (err) {
             if (err.code == "P2025") {
@@ -78,6 +82,12 @@ function remove(req, res, next) {
 function albumuserCreate(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            //Verify client request is valid for given album
+            const result = yield albumServices.verify(req.params.album_id, req.user.userId);
+            if (result === false) {
+                throw "User does not own this album";
+            }
+            //Add user to album viewlist
             res.status(200).json(yield albumServices.albumUserCreate(req.params.album_id, req.params.user_id));
         }
         catch (err) {
@@ -90,7 +100,7 @@ function albumuserCreate(req, res, next) {
             }
             else {
                 //Unknown error
-                res.status(500).json({ error: err.code });
+                res.status(500).json({ error: err });
                 next(err);
             }
         }
@@ -99,6 +109,11 @@ function albumuserCreate(req, res, next) {
 function albumuserDelete(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            //Verify client request is valid for given album
+            const result = yield albumServices.verify(req.params.album_id, req.user.userId);
+            if (result === false) {
+                throw "User does not own this album";
+            }
             res.status(200).json(yield albumServices.albumUserDelete(req.params.album_id, req.params.user_id));
         }
         catch (err) {

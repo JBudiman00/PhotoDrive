@@ -34,12 +34,13 @@ function create(albumInfo) {
         }
     });
 }
-function update(album_id, album_name) {
+function update(album_id, album_name, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield client_1.default.albums.update({
                 where: {
-                    album_id: +album_id
+                    album_id: +album_id,
+                    user_id: +user_id
                 },
                 data: {
                     album_name: album_name
@@ -52,12 +53,13 @@ function update(album_id, album_name) {
         }
     });
 }
-function remove(album_id, album_name) {
+function remove(album_id, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield client_1.default.albums.delete({
                 where: {
-                    album_id: +album_id
+                    album_id: +album_id,
+                    user_id: +user_id
                 }
             });
             return { message: "Album successfully deleted" };
@@ -101,11 +103,32 @@ function albumUserDelete(album_id, user_id) {
         }
     });
 }
+function verify(album_id, user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const query = yield client_1.default.albums.findMany({
+                where: {
+                    album_id: +album_id,
+                    user_id: user_id
+                }
+            });
+            //Check if given user Id has the album Id
+            if (query.length == 0) {
+                return false;
+            }
+            return true;
+        }
+        catch (e) {
+            throw e;
+        }
+    });
+}
 module.exports = {
     read,
     create,
     update,
     remove,
     albumUserCreate,
-    albumUserDelete
+    albumUserDelete,
+    verify
 };

@@ -22,12 +22,12 @@ async function read(user_id: number){
     return user
 }
 
-async function create(albumInfo: Prisma.PhotosCreateInput, filedest: string){
+async function create(albumInfo: Prisma.PhotosCreateInput, filedest: string, user_id: number){
     try {
         await prisma.photos.create({
             data: {
                 img_name: albumInfo.img_name,
-                user_id: +albumInfo.user,
+                user_id: +user_id,
                 img: filedest
             }
         })
@@ -37,11 +37,12 @@ async function create(albumInfo: Prisma.PhotosCreateInput, filedest: string){
     }
 }
 
-async function update(img_id: number, img_name: string){
+async function update(img_id: number, img_name: string, user_id: number){
     try {
         await prisma.photos.update({
             where: {
-                img_id: +img_id
+                img_id: +img_id,
+                user_id: +user_id
             },
             data: {
                 img_name: img_name
@@ -53,11 +54,12 @@ async function update(img_id: number, img_name: string){
     }
 }
 
-async function remove(img_id: number, album_name: string){
+async function remove(img_id: number, user_id: number){
     try {
         await prisma.photos.delete({
             where: {
-                img_id: +img_id
+                img_id: +img_id,
+                user_id: +user_id
             }
         })
         return {message: "Image successfully deleted"};
@@ -97,11 +99,36 @@ async function photoAlbumDelete(img_id: number, album_id: number){
     }
 }
 
+async function verify(album_id: number, img_id: number, user_id: number){
+    try {
+        const query = await prisma.photos.findMany({
+            where: {
+                img_id: +img_id,
+                user_id: +user_id
+                }
+        })
+        const query1 = await prisma.albums.findMany({
+            where: {
+                album_id: +album_id,
+                user_id: +user_id
+                }
+        })
+        //Check if given user Id has the img Id
+        if(query.length == 0 || query1.length == 0){
+            return false
+        }
+        return true
+    } catch(e: any) {
+        throw e
+    }
+}
+
 module.exports = {
     read,
     create,
     update,
     remove,
     photoAlbumCreate,
-    photoAlbumDelete
+    photoAlbumDelete,
+    verify
   };

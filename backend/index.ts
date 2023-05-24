@@ -8,8 +8,11 @@ const photoRoutes = require('./app/routes/photo.routes')
 import { localStrategy } from './app/middleware/passport';
 const passport = require('passport');
 
+//Instantiate express
 const app = express()
 app.use(session({ secret: process.env.SECRET_KEY || "ash", resave: false, saveUninitialized: false }));
+
+//Authentication initiation
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(localStrategy);
@@ -17,7 +20,6 @@ passport.use(localStrategy);
 passport.serializeUser(function(user: any, done: any) {
   done(null, user);
 });
-
 passport.deserializeUser(function(user: any, done: any) {
   done(null, user);
 });
@@ -37,7 +39,7 @@ app.get('/', (req, res) => {
 //Routes
 app.use('/users', userRoutes)
 app.use('/albums', passport.authenticate('jwt', {session: false}), albumRoutes)
-app.use('/photos', photoRoutes)
+app.use('/photos', passport.authenticate('jwt', {session: false}), photoRoutes)
 
 const server = app.listen(port, () =>
   console.log(`Server ready at: http://localhost:${port}`)

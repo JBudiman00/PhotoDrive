@@ -3,11 +3,10 @@ const router = express.Router();
 const userController = require('../controllers/user.controllers');
 const jwt = require('jsonwebtoken');
 import passport from 'passport';
-import ensureAuthenticated from '../utils/ensureAuthenticated';
 
 //Basic CRUD operations
 //GET users
-router.get('/:user_id', ensureAuthenticated, userController.get)
+router.get('/:user_id', userController.get)
 //POST users
 router.post('/', userController.create)
 //PUT users
@@ -27,8 +26,9 @@ router.post('/login', (req: any, res: any) => {
            if (err) {
                res.send(err);
            }
+           const expiresIn = process.env.EXPIRE;
            // generate a signed son web token with the contents of user object and return it in the response
-           const token = jwt.sign(user, process.env.SECRET_KEY);
+           const token = jwt.sign({ userId: user }, process.env.SECRET_KEY, { expiresIn });
            return res.json({user, token});
         });
     })(req, res);

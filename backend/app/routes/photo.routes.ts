@@ -4,8 +4,8 @@ const photoController = require('../controllers/photo.controllers');
 const upload = require('../middleware/photosave');
 
 //Basic CRUD operations
-//GET photos by user ID
-router.get('/:user_id', photoController.get)
+//GET photos by user ID from authentication
+router.get('/', photoController.get)
 //POST photos
 router.post('/', upload.single('img'), photoController.create)
 //PUT photos (Can update name)

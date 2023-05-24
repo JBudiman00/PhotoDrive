@@ -12,8 +12,10 @@ const albumRoutes = require('./app/routes/album.routes');
 const photoRoutes = require('./app/routes/photo.routes');
 const passport_1 = require("./app/middleware/passport");
 const passport = require('passport');
+//Instantiate express
 const app = (0, express_1.default)();
 app.use((0, express_session_1.default)({ secret: process.env.SECRET_KEY || "ash", resave: false, saveUninitialized: false }));
+//Authentication initiation
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(passport_1.localStrategy);
@@ -34,5 +36,5 @@ app.get('/', (req, res) => {
 //Routes
 app.use('/users', userRoutes);
 app.use('/albums', passport.authenticate('jwt', { session: false }), albumRoutes);
-app.use('/photos', photoRoutes);
+app.use('/photos', passport.authenticate('jwt', { session: false }), photoRoutes);
 const server = app.listen(port, () => console.log(`Server ready at: http://localhost:${port}`));

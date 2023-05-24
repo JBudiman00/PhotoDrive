@@ -2,7 +2,7 @@ const photoServices = require('../services/photo.services');
 
 async function get(req: any, res: any, next: any) {
   try {
-      res.status(200).json(await photoServices.read(req.params.user_id));
+      res.status(200).json(await photoServices.read(req.user.userId));
   } catch (err: any) {
       console.error(`Error while getting photo info`, err.message);
       next(err);
@@ -11,7 +11,7 @@ async function get(req: any, res: any, next: any) {
 
 async function create(req: any, res: any, next: any) {
   try {
-    res.status(200).json(await photoServices.create(req.body, req.file.destination + req.file.filename));
+    res.status(200).json(await photoServices.create(req.body, req.file.destination + req.file.filename, req.user.userId));
   } catch (err: any) {
     //Handle case where user_id doesn't exist
     if(err.code == "P2003"){
@@ -23,12 +23,12 @@ async function create(req: any, res: any, next: any) {
 
 async function update(req: any, res: any, next: any) {
   try {
-    await photoServices.update(req.params.img_id, req.body.img_name);
+    await photoServices.update(req.params.img_id, req.body.img_name, req.user.userId);
     res.status(204).json();
   } catch (err: any) {
     //Handle case where album_id doesn't exist
     if(err.code == "P2025"){
-        res.status(404).json({message: "Image ID doesn't exist"})
+        res.status(404).json({message: "Image ID doesn't exist for this user"})
     } else{
         //Unknown error
     res.status(500).json({error: err.message})
@@ -39,10 +39,10 @@ async function update(req: any, res: any, next: any) {
 
 async function remove(req: any, res: any, next: any) {
   try {
-    res.status(200).json(await photoServices.remove(req.params.img_id));
+    res.status(200).json(await photoServices.remove(req.params.img_id, req.user.userId));
   } catch (err: any) {
     if(err.code == "P2025"){
-        res.status(404).json({message: "Image ID doesn't exist"})
+        res.status(404).json({message: "Image ID doesn't exist for this user"})
     } else{
         //Unknown error
         res.status(500).json({error: err.message})
@@ -54,21 +54,33 @@ async function remove(req: any, res: any, next: any) {
 //Relationship endpoint
 async function photoalbumCreate(req: any, res: any, next: any) {
   try {
+    //Verify client request is valid for given album and photo
+    const result = await photoServices.verify(req.params.album_id, req.params.img_id, req.user.userId)
+    if(result === false){
+      throw "User does not own this album or photo"
+    }
     res.status(201).json(await photoServices.photoAlbumCreate(req.params.img_id, req.params.album_id));
   } catch (err: any) {
     //Handle case where user_id doesn't exist
     if(err.code == "P2002"){
-        res.status(404).json({message: "Relationship already established"})
-      } else if(err.code == "P2003"){
-        res.status(404).json({message: "Unable to find ids required to establish relationship in database"})
-      }
-    
+      res.status(404).json({message: "Relationship already established"})
+    } else if(err.code == "P2003"){
+      res.status(404).json({message: "Unable to find ids required to establish relationship in database"})
+    } else{
+      res.status(500).json({error: err})
+    }
+  
     next(err);
   }
 }
 
 async function photoalbumDelete(req: any, res: any, next: any) {
   try {
+    //Verify client request is valid for given album and photo
+    const result = await photoServices.verify(req.params.album_id, req.params.img_id, req.user.userId)
+    if(result === false){
+      throw "User does not own this album or photo"
+    }
     res.status(200).json(await photoServices.photoAlbumDelete(req.params.img_id, req.params.album_id));
   } catch (err: any) {
     //Handle case where user_id doesn't exist
@@ -87,7 +99,7 @@ module.exports = {
   update,
   remove,
   photoalbumCreate,
-  photoalbumDelete
+  photoalbumDelete,
 };
 
 export{}
