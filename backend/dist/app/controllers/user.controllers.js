@@ -8,12 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const userServices = require('../services/user.services');
-const bcrypt_1 = __importDefault(require("../utils/bcrypt"));
+const bcrypt = require("bcrypt");
 function get(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -28,7 +25,7 @@ function get(req, res, next) {
 function create(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const pw = yield (0, bcrypt_1.default)(req.body.passwordHash);
+            const pw = yield bcrypt.hashSync(req.body.passwordHash, 8);
             const user = {
                 email: req.body.email,
                 passwordHash: pw,

@@ -89,3 +89,5 @@ module.exports = {
   photoalbumCreate,
   photoalbumDelete
 };
+
+export{}

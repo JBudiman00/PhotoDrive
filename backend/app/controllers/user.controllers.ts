@@ -1,5 +1,5 @@
 const userServices = require('../services/user.services');
-import getBcrypt from '../utils/bcrypt';
+const bcrypt = require("bcrypt")
 
 async function get(req: any, res: any, next: any) {
   try {
@@ -12,7 +12,7 @@ async function get(req: any, res: any, next: any) {
 
 async function create(req: any, res: any, next: any) {
   try {
-    const pw = await getBcrypt(req.body.passwordHash);
+    const pw = await bcrypt.hashSync(req.body.passwordHash, 8);
     const user = {
         email: req.body.email,
         passwordHash: pw,
@@ -53,3 +53,5 @@ module.exports = {
 //   update,
 //   remove
 };
+
+export{}

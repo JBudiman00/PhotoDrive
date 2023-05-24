@@ -2,6 +2,7 @@ const albumServices = require('../services/album.services');
 
 async function get(req: any, res: any, next: any) {
   try {
+    
       res.status(200).json(await albumServices.read(req.params.user_id));
   } catch (err: any) {
       console.error(`Error while getting album info`, err.message);
