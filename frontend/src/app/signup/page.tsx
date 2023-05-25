@@ -23,13 +23,25 @@ export default function Login() {
             }
         }).then((response: any) => {
             console.log(response);
-            setStatus("User created!");
             router.push('/login');
         }).catch(error => {
             console.log(error.response.data.message);
             setStatus(error.response.data.message);
           });
     }
+
+    const errorHandle = () => {
+        if(status == ""){
+            return;
+        }
+
+        return (
+            <div className="justify-self-center bg-[#FFCDD2] text-[#B71C1C] rounded-lg align-middle py-2 px-2 mt-6">
+                {status}
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col h-[calc(100vh-74px)] items-center justify-center">
             <div className="flex flex-col bg-[#F1F6F9] h-1/2 w-1/3 items-center">
@@ -61,9 +73,7 @@ export default function Login() {
                             onChange={(e) => setPw(e.target.value)}    
                         />
                     </div>
-                    <div className="justify-self-center bg-[#FFCDD2] text-[#B71C1C] rounded-lg align-middle py-2 px-1 mt-6">
-                        {status}
-                    </div>
+                    {errorHandle()}
                     <div className="h-6"></div>
                     <div className="grid grid-cols-3">
                         <input type="submit" className="col-start-2 text-lg text-[#F1F6F9] bg-[#212A3E] rounded-xl px-1 py-1"/>

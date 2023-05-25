@@ -11,7 +11,7 @@ async function get(req: any, res: any, next: any) {
 
 async function create(req: any, res: any, next: any) {
   try {
-    res.status(200).json(await photoServices.create(req.body, req.file.destination + req.file.filename, req.user.userId));
+    res.status(200).json(await photoServices.create(req.body, 'photos/' + req.file.filename, req.user.userId));
   } catch (err: any) {
     //Handle case where user_id doesn't exist
     if(err.code == "P2003"){

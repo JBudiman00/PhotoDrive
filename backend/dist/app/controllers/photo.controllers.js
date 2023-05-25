@@ -24,7 +24,7 @@ function get(req, res, next) {
 function create(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.status(200).json(yield photoServices.create(req.body, req.file.destination + req.file.filename, req.user.userId));
+            res.status(200).json(yield photoServices.create(req.body, 'photos/' + req.file.filename, req.user.userId));
         }
         catch (err) {
             //Handle case where user_id doesn't exist
