@@ -19,7 +19,7 @@ router.post('/', userController.create);
 router.post('/login', (req, res) => {
     passport_1.default.authenticate('local', { session: false }, (err, user, info) => {
         if (err || !user) {
-            return res.status(400).json({
+            return res.status(404).json({
                 message: info,
                 user: user
             });
@@ -31,7 +31,9 @@ router.post('/login', (req, res) => {
             const expiresIn = process.env.EXPIRE;
             // generate a signed son web token with the contents of user object and return it in the response
             const token = jwt.sign({ userId: user }, process.env.SECRET_KEY, { expiresIn });
-            return res.json({ user, token });
+            return res
+                .cookie('accessToken', token, { HttpOnly: true })
+                .json({ user, token });
         });
     })(req, res);
 });

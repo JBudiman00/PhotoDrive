@@ -7,10 +7,17 @@ const albumRoutes = require('./app/routes/album.routes')
 const photoRoutes = require('./app/routes/photo.routes') 
 import { localStrategy } from './app/middleware/passport';
 const passport = require('passport');
+var cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 //Instantiate express
 const app = express()
 app.use(session({ secret: process.env.SECRET_KEY || "ash", resave: false, saveUninitialized: false }));
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
+app.use(cookieParser());
 
 //Authentication initiation
 app.use(passport.initialize());

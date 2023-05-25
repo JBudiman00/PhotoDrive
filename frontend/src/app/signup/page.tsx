@@ -1,24 +1,34 @@
 "use client";
 import Link from 'next/link';
 import { useState } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [pw, setPw] = useState("");
+    const router = useRouter();
+    const [status, setStatus] = useState("");
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-        let res = await fetch("https://localhost:8000/user/add", {
-            method: "POST",
-            body: JSON.stringify({
-                name: name,
-                email: email,
-                password: pw
-            })
-        });
-
-        console.log(await res.json());
+        axios.post("http://localhost:8000/users", JSON.stringify({
+            name: name,
+            email: email,
+            passwordHash: pw
+        }),{
+            headers: {
+              "Content-Type": "application/json"
+            }
+        }).then((response: any) => {
+            console.log(response);
+            setStatus("User created!");
+            router.push('/login');
+        }).catch(error => {
+            console.log(error.response.data.message);
+            setStatus(error.response.data.message);
+          });
     }
     return (
         <div className="flex flex-col h-[calc(100vh-74px)] items-center justify-center">
@@ -50,6 +60,9 @@ export default function Login() {
                             className="bg-[#D9D9D9] rounded-xl w-2/3" 
                             onChange={(e) => setPw(e.target.value)}    
                         />
+                    </div>
+                    <div className="justify-self-center bg-[#FFCDD2] text-[#B71C1C] rounded-lg align-middle py-2 px-1 mt-6">
+                        {status}
                     </div>
                     <div className="h-6"></div>
                     <div className="grid grid-cols-3">

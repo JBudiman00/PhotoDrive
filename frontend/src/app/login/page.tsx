@@ -1,23 +1,37 @@
 "use client";
 import Link from 'next/link';
 import { useState } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+
+axios.defaults.withCredentials = true;
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [pw, setPw] = useState("");
+    const [status, setStatus] = useState("");
+    const router = useRouter();
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-        let res = await fetch("http://localhost:8000/user/verify?email="+email+"&password="+pw, {
-            method: "GET",
-            
-        });
-
-        const resJson = await res.json()
-        console.log(resJson);
-        if(resJson.message === "Login successful"){
-            window.location.href='http://localhost:3000/home';
-        }
+        axios.post("http://localhost:8000/users/login", JSON.stringify({
+            username: email,
+            password: pw
+            }),{
+            headers: {
+              "Content-Type": "application/json"
+            },
+          }).then((response: any) => {
+            console.log(response);
+            setStatus("Logging in");
+            router.push('/home');
+        }).catch(error => {
+            console.log(error.response.data.message);
+            setStatus(error.response.data.message);
+          });
+        // if(resJson.message === "Login successful"){
+        //     window.location.href='http://localhost:3000/home';
+        // }
     }
     return (
         <div className="flex flex-col h-[calc(100vh-74px)] items-center justify-center">
@@ -48,7 +62,10 @@ export default function Login() {
                     </div>
                 </form>
                 <div className="self-center justify-self-center pt-3">
-                    <p>Already have an account? <Link href="/login" className="text-[#3A85F5]">Login</Link></p>
+                    <p>Don't have an account? <Link href="/signup" className="text-[#3A85F5]">Sign up</Link></p>
+                </div>
+                <div className="self-center justify-self-center pt-3">
+                    {status}
                 </div>
             </div>
         </div>

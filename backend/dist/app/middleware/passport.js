@@ -46,7 +46,8 @@ exports.localStrategy = new passport_local_1.Strategy((username, password, done)
     }
 }));
 passport_1.default.use(new JWTStrategy({
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    // jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    jwtFromRequest: (req) => req.cookies.accessToken,
     secretOrKey: process.env.SECRET_KEY,
     expiresIn: process.env.EXPIRE
 }, 

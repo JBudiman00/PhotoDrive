@@ -12,9 +12,16 @@ const albumRoutes = require('./app/routes/album.routes');
 const photoRoutes = require('./app/routes/photo.routes');
 const passport_1 = require("./app/middleware/passport");
 const passport = require('passport');
+var cors = require('cors');
+const cookieParser = require('cookie-parser');
 //Instantiate express
 const app = (0, express_1.default)();
 app.use((0, express_session_1.default)({ secret: process.env.SECRET_KEY || "ash", resave: false, saveUninitialized: false }));
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
+app.use(cookieParser());
 //Authentication initiation
 app.use(passport.initialize());
 app.use(passport.session());

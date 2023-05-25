@@ -35,7 +35,8 @@ export const localStrategy = new LocalStrategy(async (username: string, password
 });
 
 passport.use(new JWTStrategy({
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    // jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    jwtFromRequest: (req: any) => req.cookies.accessToken,
     secretOrKey   : process.env.SECRET_KEY,
     expiresIn: process.env.EXPIRE
     },
