@@ -1,5 +1,5 @@
 import ToggleButton from '../components/buttonToggle';
-import Select from 'react-select'
+import Select from 'react-select';
 
 export default function albumToggle (props: any) {
     const option = props.albumList.map((item: any) => {
@@ -12,17 +12,19 @@ export default function albumToggle (props: any) {
             {<ToggleButton text1={props.item1} text2={props.item2} toggle={props.toggleAlbum} setToggle={props.setToggleAlbum}/>}
         </div>
             {<Select 
-                isMulti
-                className="basic-multi-select my-2 w-2/3"
+                className="basic-single"
                 classNamePrefix="select"
-                onChange={(e: any) => {
-                    const arr = e.map((item: any) => {
-                        return item.value
-                    })
-                    props.setAlbums(arr);
-                }}
-                // value={albumList}
+                isClearable={true}
+                isSearchable={true}
+                name="SearchSelect"
                 options={option} 
+                onChange={(e) => {
+                    if(e == null){
+                        props.setAlbums({});
+                    } else {
+                        props.setAlbums(e);
+                    }
+                }}
             />}
         </div>
     );

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import PhotoToggle from '../components/photoToggle';
 import AlbumToggle from '../components/albumToggle';
+import PhotoDisplay from '../components/photoDisplay';
 import { useRouter } from 'next/navigation';
 
 
@@ -52,8 +53,9 @@ export default function Home() {
                 </div>
                 <div className="col-span-4">
                     <PhotoToggle item1="All photos" item2="Album only" toggle={toggle} setToggle={setToggle} />
+                    <div className="h-4"></div>
                     <div className="grid grid-cols-5">
-                        {photoList.map((item: any) => {
+                        {/* {photoList.map((item: any) => {
                             //Return all photos if no albums are selected by user
                             //Only return photos in albums selected by user
                             //Still not complete; need to deal with case where photo belongs to more than 1 album
@@ -65,7 +67,8 @@ export default function Home() {
                                     </div>
                                 );
                             } 
-                        })}
+                        })} */}
+                        <PhotoDisplay albums={albums} photoList={photoList} toggle={toggle}/>
                     </div>
                 </div>
             </div>    
