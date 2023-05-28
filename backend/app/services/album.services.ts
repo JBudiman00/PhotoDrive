@@ -6,7 +6,7 @@ async function read(user_id: number){
         where: {
             user_id: +user_id
         },
-        })
+    })
     return user
 }
 
@@ -80,6 +80,57 @@ async function albumUserDelete(album_id: number, user_id: number){
     }
 }
 
+async function albumUserGet(user_id: number){
+    try {
+        //Query to find all albums owned by a user
+        const albumInfo = await prisma.albums.findMany({
+            where: {
+                user_id: +user_id
+            },
+            select: {
+                album_id: true
+            }
+        })
+        const format: Array<number> = albumInfo.map((item) => {return item.album_id})
+        
+        //Query to find user view permissions for albums found in previosu query
+        const userInfo = await prisma.userAlbums.findMany({
+            where: {
+                album_id: {in: format}
+            },
+            select: {
+                album_id: true,
+                user: {
+                    select: {
+                        user_id: true,
+                        name: true,
+                        email: true
+                    }
+                }
+            },
+        })
+
+        //Group data and make API more readable
+        const groupedData = Object.values(
+            userInfo.reduce((accumulator: any, item: any) => {
+              const { album_id, user } = item;
+          
+              if (!accumulator[album_id]) {
+                accumulator[album_id] = { album_id, user: [] };
+              }
+          
+              accumulator[album_id].user.push(user);
+          
+              return accumulator;
+            }, {})
+          );
+
+        return groupedData;
+    } catch(e: any) {
+        throw e
+    }
+}
+
 async function verify(album_id: number, user_id: number){
     try {
         const query = await prisma.albums.findMany({
@@ -105,5 +156,6 @@ module.exports = {
     remove,
     albumUserCreate,
     albumUserDelete,
-    verify
+    verify,
+    albumUserGet
   };

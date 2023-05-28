@@ -129,11 +129,24 @@ function albumuserDelete(req, res, next) {
         }
     });
 }
+function albumuserGet(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.status(200).json(yield albumServices.albumUserGet(req.user.userId));
+        }
+        catch (err) {
+            //Handle case where user_id doesn't exist
+            res.status(404).json({ message: err });
+            next(err);
+        }
+    });
+}
 module.exports = {
     get,
     create,
     update,
     remove,
     albumuserCreate,
-    albumuserDelete
+    albumuserDelete,
+    albumuserGet
 };

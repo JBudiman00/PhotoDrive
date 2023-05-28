@@ -101,13 +101,24 @@ async function albumuserDelete(req: any, res: any, next: any) {
   }
 }
 
+async function albumuserGet(req: any, res: any, next: any){
+  try {
+    res.status(200).json(await albumServices.albumUserGet(req.user.userId));
+  } catch (err: any) {
+    //Handle case where user_id doesn't exist
+    res.status(404).json({message: err})
+    next(err);
+  }
+}
+
 module.exports = {
   get,
   create,
   update,
   remove,
   albumuserCreate,
-  albumuserDelete
+  albumuserDelete,
+  albumuserGet
 };
 
 export{}

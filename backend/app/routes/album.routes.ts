@@ -17,7 +17,8 @@ router.delete('/:album_id', albumController.remove)
 router.post('/:album_id/users/:user_id', albumController.albumuserCreate)
 //Remove people from album viewlist
 router.delete('/:album_id/users/:user_id', albumController.albumuserDelete)
-
+//GET users from album viewlist
+router.get('/all', albumController.albumuserGet)
 
 module.exports = router;
 export{}
