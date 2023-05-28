@@ -14,9 +14,13 @@ const bcrypt = require("bcrypt");
 function get(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.status(200).json(yield userServices.read(req.params.user_id));
+            res.status(200).json(yield userServices.read(req.params.email));
         }
         catch (err) {
+            //Couldn't find user with given email address
+            if (err === 1) {
+                res.status(404).json({ message: "Unable to find user with given email" });
+            }
             console.error(`Error while getting user info`, err.message);
             next(err);
         }

@@ -9,8 +9,8 @@ const userController = require('../controllers/user.controllers');
 const jwt = require('jsonwebtoken');
 const passport_1 = __importDefault(require("passport"));
 //Basic CRUD operations
-//GET users
-router.get('/:user_id', userController.get);
+//GET user by email
+router.get('/:email', userController.get);
 //POST users
 router.post('/', userController.create);
 //PUT users

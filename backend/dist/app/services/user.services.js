@@ -13,11 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = __importDefault(require("../models/client"));
-function read(user_id) {
+function read(email) {
     return __awaiter(this, void 0, void 0, function* () {
         const user = yield client_1.default.users.findUnique({
             where: {
-                user_id: +user_id
+                email: email
             },
             include: {
                 useralbums: {
@@ -27,6 +27,9 @@ function read(user_id) {
                 }
             }
         });
+        if (user === null) {
+            throw 1;
+        }
         return user;
     });
 }

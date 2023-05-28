@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken');
 import passport from 'passport';
 
 //Basic CRUD operations
-//GET users
-router.get('/:user_id', userController.get)
+//GET user by email
+router.get('/:email', userController.get)
 //POST users
 router.post('/', userController.create)
 //PUT users

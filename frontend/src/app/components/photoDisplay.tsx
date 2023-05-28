@@ -34,5 +34,9 @@ export default function PhotoDisplay (props: PhotoInterface) {
         }
     })
 
-    return list
+    return (
+        <>
+        {list}
+        </>
+    )
 }

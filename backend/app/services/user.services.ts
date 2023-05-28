@@ -1,10 +1,10 @@
 import prisma from '../models/client';
 import { Prisma } from '@prisma/client'
 
-async function read(user_id: number){
+async function read(email: string){
     const user = await prisma.users.findUnique({
         where: {
-          user_id: +user_id
+          email: email
         },
         include:{
           useralbums: {
@@ -14,6 +14,10 @@ async function read(user_id: number){
           }
         }
       })
+
+    if(user === null){
+      throw 1
+    }
     return user
 }
 

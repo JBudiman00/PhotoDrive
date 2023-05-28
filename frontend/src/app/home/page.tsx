@@ -36,6 +36,9 @@ export default function Home() {
     const [userPerm, setUserPerm] = useState<any>({});
     //Stores number representing view-permission selection for user selected albums
     const [perm, setPerm] = useState<Array<userPermissions>>([]);
+    //Vartiable to set user adding view status 
+    const [addStatus, setAddStatus] = useState<string>("");
+    
     const router = useRouter();
 
     //Database GET calls
@@ -67,7 +70,7 @@ export default function Home() {
             console.log(response.data)
             setUserPerm(response.data)
         })
-    }, []);
+    }, [addStatus]);
 
     return (
         <>
@@ -76,7 +79,9 @@ export default function Home() {
                 <div className="col-span-1 bg-[#D9D9D9]">
                     <ToggleButton text1="Personal albums" text2="Shared albums" toggle={toggleAlbum} setToggle={setToggleAlbum} />
                     <AlbumInfo albums={albums} albumList={albumList} setUserPerm={setUserPerm} 
-                    userPerm={userPerm} setAlbums={setAlbums} perm={perm} setPerm={setPerm}/>
+                    userPerm={userPerm} setAlbums={setAlbums} perm={perm} setPerm={setPerm}
+                    addStatus={addStatus} setAddStatus={setAddStatus}
+                    />
                 </div>
                 <div className="col-span-4">
                     <PhotoToggle item1="All photos" item2="Album only" toggle={toggle} setToggle={setToggle} />

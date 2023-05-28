@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Select from 'react-select';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface albumInterface{
     album_id: number,
@@ -20,10 +20,15 @@ interface albumInfo {
     userPerm: any,
     setAlbums: any,
     perm: Array<userPermissions>,
-    setPerm: any
+    setPerm: any,
+    addStatus: string,
+    setAddStatus: any
 }
 
 export default function AlbumInfo (props: albumInfo){
+    //Variable to hold add user form submission
+    const [email, setEmail] = useState<string>("");
+
     //Available albums for selection in dropdown menu
     const option = props.albumList.map((item: any) => {
         return {value: item, label: item.album_name}
@@ -47,22 +52,47 @@ export default function AlbumInfo (props: albumInfo){
         };
     
         getPerm();
-      }, [props.albums.album_id, props.userPerm]);
+      }, [props.albums.album_id, props.userPerm, props.addStatus]);
 
     //Post request to delete user from database
     const deleteUser = (user_id: number, album_id: number) => {
         axios.delete('http://localhost:8000/albums/' + album_id + '/users/' + user_id, { withCredentials: true })
         .then((response) => {
-            console.log(response.data)
-        })
+            console.log(response.data);
+            props.setAddStatus("User successfully removed from album");
+        });
     }
 
     //Post request to add user to database
-    const addUser = (user_id: number, album_id: number) => {
-        axios.delete('http://localhost:8000/albums/' + album_id + '/users/' + user_id, { withCredentials: true })
-        .then((response) => {
-            console.log(response.data)
-        })
+    const addUser = async (e: any) => {
+        e.preventDefault();
+        if(email?.trim().length === 0){
+            console.log('Input value is empty');
+            props.setAddStatus('Email field is empty');
+            return;
+        }
+        try{
+            const user_id: number = await axios.get('http://localhost:8000/users/' + email)
+            .then((response) => {
+                return response.data.user_id
+            });
+
+            await axios.post('http://localhost:8000/albums/' + props.albums.album_id + '/users/' + user_id, { withCredentials: true })
+            .then((response) => {
+                props.setAddStatus("User successfully added to album");
+            })
+        } catch(err: any){
+            console.log(err.response.status)
+            if (err.response.status === 404){
+                console.log("Unable to find user with given email");
+                props.setAddStatus("Unable to find user with given email")
+            } else if(err.response.status == 409){
+                console.log("User already in album");
+                props.setAddStatus("User already in album")
+            } else {
+                console.error(err);
+            }
+        }
     }
 
     //Initialize album selection update
@@ -86,31 +116,38 @@ export default function AlbumInfo (props: albumInfo){
                 options={option} 
                 onChange={(e) => {albumSelect(e)}}
             />
-            <div className="text-center">
+            <div className="text-center w-5/6">
                 <p>{props.albums.album_name}</p>
                 <p>{props.albums.date}</p>
                 <p>Shared with</p>
                 {props.perm.map((item: any) => {
                     return (
-                        <div key={item.user_id} className="flex flex-row bg-[#394867] text-[#F1F6F9] h-10 rounded-2xl pl-2 my-2 text-lg items-center">
+                        <div key={item.user_id} className="flex flex-row bg-[#394867] text-[#F1F6F9] h-10 rounded-2xl my-2 text-lg items-center">
                             <p className="w-5/6">{item.name}</p>
-                            <img onClick={() => deleteUser(item.user_id, props.albums.album_id)} src="deleteicon.png" className="h-6 items-end"/>
+                            <div className="flex w-1/6 justify-end">
+                                <img onClick={() => deleteUser(item.user_id, props.albums.album_id)} src="deleteicon.png" className="h-6 mr-2"/>
+                            </div>
                         </div>
                     );
                 })}
-                <form>
-                    <Select 
+                <form onSubmit={addUser}>
+                    {/* May add selection feature if time available */}
+                    {/* <Select 
                         className="basic-single mt-2"
                         classNamePrefix="select"
                         isClearable={true}
                         isSearchable={true}
                         name="UserSubmit"
                         options={userOption} 
-                        onChange={(e) => {albumSelect(e)}}
+                    /> */}
+                    <input 
+                        type="text"
+                        onChange={((e: any) => setEmail(e.target.value))}
+                        className="w-2/3 text-xl py-1"    
                     />
-
-                    <button type="submit">Submit</button>
+                    <button type="submit" className="bg-[#394867] text-[#FFFFFF] rounded-lg p-2 mt-2">Submit</button>
                 </form>
+                <p>{props.addStatus}</p>
             </div>
         </div>
     )
