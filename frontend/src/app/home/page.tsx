@@ -36,8 +36,12 @@ export default function Home() {
     const [userPerm, setUserPerm] = useState<any>({});
     //Stores number representing view-permission selection for user selected albums
     const [perm, setPerm] = useState<Array<userPermissions>>([]);
-    //Vartiable to set user adding view status 
+    //Variable to set user adding view status 
     const [addStatus, setAddStatus] = useState<string>("");
+    //Variable to update borders on images
+    const [borderStatus, setBorderStatus] = useState<boolean>(true);
+    //Variable to update photos in album
+    const [photoStatus, setPhotoStatus] = useState<boolean>(true);
     
     const router = useRouter();
 
@@ -70,7 +74,10 @@ export default function Home() {
             console.log(response.data)
             setUserPerm(response.data)
         })
-    }, [addStatus]);
+
+        setBorderStatus(false)
+        setPhotoStatus(false)
+    }, [addStatus, borderStatus, photoStatus]);
 
     return (
         <>
@@ -84,10 +91,10 @@ export default function Home() {
                     />
                 </div>
                 <div className="col-span-4">
-                    <PhotoToggle item1="All photos" item2="Album only" toggle={toggle} setToggle={setToggle} />
+                    <PhotoToggle item1="All photos" item2="Album only" toggle={toggle} setToggle={setToggle} setPhotoStatus={setPhotoStatus}/>
                     <div className="h-4"></div>
                     <div className="grid grid-cols-5">
-                        <PhotoDisplay albums={albums} photoList={photoList} toggle={toggle}/>
+                        <PhotoDisplay albums={albums} photoList={photoList} toggle={toggle} setBorderStatus={setBorderStatus} />
                     </div>
                 </div>
             </div>    
