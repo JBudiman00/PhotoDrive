@@ -1,4 +1,5 @@
 const photoServices = require('../services/photo.services');
+const fs = require("fs");
 
 async function get(req: any, res: any, next: any) {
   try {
@@ -39,7 +40,13 @@ async function update(req: any, res: any, next: any) {
 
 async function remove(req: any, res: any, next: any) {
   try {
-    res.status(200).json(await photoServices.remove(req.params.img_id, req.user.userId));
+    //Get filename from database
+    const filepath = await photoServices.getPhoto(req.body.img_id);
+    //Remove file from database
+    res.status(200).json(await photoServices.remove(req.body.img_id, req.user.userId));
+    //Remove file from physical location
+    fs.unlinkSync("C:\\Users\\13145\\Documents\\GitHub\\PhotoDrive\\frontend\\public\\"+filepath);
+
   } catch (err: any) {
     if(err.code == "P2025"){
         res.status(404).json({message: "Image ID doesn't exist for this user"})

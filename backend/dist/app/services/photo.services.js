@@ -74,6 +74,13 @@ function update(img_id, img_name, user_id) {
 function remove(img_id, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            //Remove photo foreign key constraints
+            yield client_1.default.photoAlbums.deleteMany({
+                where: {
+                    img_id: +img_id
+                }
+            });
+            //Remove photos from photo table
             yield client_1.default.photos.delete({
                 where: {
                     img_id: +img_id,
@@ -81,6 +88,27 @@ function remove(img_id, user_id) {
                 }
             });
             return { message: "Image successfully deleted" };
+        }
+        catch (e) {
+            throw e;
+        }
+    });
+}
+function getPhoto(img_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const filePath = yield client_1.default.photos.findUnique({
+                where: {
+                    img_id: +img_id
+                },
+                select: {
+                    img: true
+                }
+            });
+            if (filePath == null) {
+                throw "Filepath not found";
+            }
+            return filePath.img;
         }
         catch (e) {
             throw e;
@@ -155,5 +183,6 @@ module.exports = {
     remove,
     photoAlbumCreate,
     photoAlbumDelete,
-    verify
+    verify,
+    getPhoto
 };

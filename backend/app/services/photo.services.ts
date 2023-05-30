@@ -56,13 +56,40 @@ async function update(img_id: number, img_name: string, user_id: number){
 
 async function remove(img_id: number, user_id: number){
     try {
+        //Remove photo foreign key constraints
+        await prisma.photoAlbums.deleteMany({
+            where: {
+                img_id: +img_id
+            }
+        });
+
+        //Remove photos from photo table
         await prisma.photos.delete({
             where: {
                 img_id: +img_id,
                 user_id: +user_id
             }
-        })
+        });
         return {message: "Image successfully deleted"};
+    } catch(e: any) {
+        throw e
+    }
+}
+
+async function getPhoto(img_id: number){
+    try {
+        const filePath = await prisma.photos.findUnique({
+            where: {
+                img_id: +img_id
+            },
+            select: {
+                img: true
+            }
+        })
+        if(filePath == null){
+            throw "Filepath not found";
+        }
+        return filePath.img;
     } catch(e: any) {
         throw e
     }
@@ -130,5 +157,6 @@ module.exports = {
     remove,
     photoAlbumCreate,
     photoAlbumDelete,
-    verify
+    verify,
+    getPhoto
   };

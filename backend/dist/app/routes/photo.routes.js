@@ -12,7 +12,7 @@ router.post('/', upload.single('img'), photoController.create);
 //PUT photos (Can update name)
 router.put('/:img_id', photoController.update);
 //DELETE photos
-router.delete('/:img_id', photoController.remove);
+router.delete('/', photoController.remove);
 //Relationship endpoints
 //POST Add photo to album
 router.post('/:img_id/album/:album_id', photoController.photoalbumCreate);

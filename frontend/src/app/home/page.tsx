@@ -94,7 +94,7 @@ export default function Home() {
                     <PhotoToggle item1="All photos" item2="Album only" toggle={toggle} setToggle={setToggle} setPhotoStatus={setPhotoStatus}/>
                     <div className="h-4"></div>
                     <div className="grid grid-cols-5">
-                        <PhotoDisplay albums={albums} photoList={photoList} toggle={toggle} setBorderStatus={setBorderStatus} />
+                        <PhotoDisplay albums={albums} photoList={photoList} toggle={toggle} setBorderStatus={setBorderStatus} setPhotoStatus={setPhotoStatus}/>
                     </div>
                 </div>
             </div>    

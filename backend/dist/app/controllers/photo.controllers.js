@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const photoServices = require('../services/photo.services');
+const fs = require("fs");
 function get(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -57,7 +58,12 @@ function update(req, res, next) {
 function remove(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            res.status(200).json(yield photoServices.remove(req.params.img_id, req.user.userId));
+            //Get filename from database
+            const filepath = yield photoServices.getPhoto(req.body.img_id);
+            //Remove file from database
+            res.status(200).json(yield photoServices.remove(req.body.img_id, req.user.userId));
+            //Remove file from physical location
+            fs.unlinkSync("C:\\Users\\13145\\Documents\\GitHub\\PhotoDrive\\frontend\\public\\" + filepath);
         }
         catch (err) {
             if (err.code == "P2025") {
