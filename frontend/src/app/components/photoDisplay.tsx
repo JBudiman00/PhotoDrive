@@ -10,8 +10,7 @@ interface PhotoInterface {
     photoList: Array<any>,
     //Toggle equals true for all photos and false for album only
     toggle: boolean,
-    setBorderStatus: any,
-    setPhotoStatus: any
+    setStatus: any
 }
 
 export default function PhotoDisplay (props: PhotoInterface) {
@@ -29,14 +28,14 @@ export default function PhotoDisplay (props: PhotoInterface) {
             await axios.delete('http://localhost:8000/photos/' + img.img_id + '/album/' + album_id, { withCredentials: true })
             .then((response) => {
                 console.log(response.data);
-                props.setBorderStatus(true);
-            })
+                props.setStatus(true);
+            });
         } else {
             await axios.post('http://localhost:8000/photos/' + img.img_id + '/album/' + album_id, { withCredentials: true })
             .then((response) => {
                 console.log(response.data);
-                props.setBorderStatus(true);
-            })
+                props.setStatus(true);
+            });
         }
     }
 
@@ -53,17 +52,17 @@ export default function PhotoDisplay (props: PhotoInterface) {
                 }
             }
         )
-        console.log("deleteResult");
+        console.log(deleteResult);
         //Force Photo display reload
-        props.setPhotoStatus(true);
+        props.setStatus(true);
     }
 
     const list = props.photoList.map((item: any) => {
         //Adding blue highlight and showing images belonging to selected album
         if((!(item.photoalbums === undefined) && item.photoalbums.some((e: any) => e.album_id === album_id))){
             return (
-                <div className="flex flex-row grid-span-1">
-                    <div className="flex flex-col items-center h-48 ml-2" key={item.img_id}>
+                <div className="flex flex-row grid-span-1" key={item.img_id}>
+                    <div className="flex flex-col items-center h-48 ml-2">
                         <img className="border-2 border-blue-500" src={item.img} onClick={(e:any) => handleClick(e, item, true)}/>
                         <p>{item.img_name}</p>
                     </div>
@@ -75,8 +74,8 @@ export default function PhotoDisplay (props: PhotoInterface) {
         //without a blue highlight
         if(props.toggle == true){
             return (
-                <div className="flex flex-row grid-span-1">
-                    <div className="flex flex-col items-center h-48 ml-2" key={item.img_id}>
+                <div className="flex flex-row grid-span-1" key={item.img_id}>
+                    <div className="flex flex-col items-center h-48 ml-2">
                         <img src={item.img} onClick={(e:any) => handleClick(e, item, false)}/>
                         <p>{item.img_name}</p>
                     </div>

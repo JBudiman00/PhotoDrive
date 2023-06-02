@@ -38,10 +38,8 @@ export default function Home() {
     const [perm, setPerm] = useState<Array<userPermissions>>([]);
     //Variable to set user adding view status 
     const [addStatus, setAddStatus] = useState<string>("");
-    //Variable to update borders on images
-    const [borderStatus, setBorderStatus] = useState<boolean>(true);
-    //Variable to update photos in album
-    const [photoStatus, setPhotoStatus] = useState<boolean>(true);
+    //Variable to rerender useeffect
+    const [status, setStatus] = useState<boolean>(true);
     
     const router = useRouter();
 
@@ -50,7 +48,6 @@ export default function Home() {
         //Fetch all user albums
         axios.get("http://localhost:8000/albums", { withCredentials: true })
         .then((response: any) => {
-            console.log(response);
             setAlbumList(response.data);
         }).catch(error => {
             console.log(error.response.data);
@@ -62,7 +59,6 @@ export default function Home() {
         //Fetch all user photos
         axios.get("http://localhost:8000/photos", { withCredentials: true })
         .then((response: any) => {
-            console.log(response.data)
             setPhotoList(response.data)
         }).catch(error => {
             console.log(error.response.data);
@@ -71,30 +67,29 @@ export default function Home() {
         //Fetch shared user information
         axios.get('http://localhost:8000/albums/all', { withCredentials: true })
         .then((response) => {
-            console.log(response.data)
             setUserPerm(response.data)
         })
 
-        setBorderStatus(false)
-        setPhotoStatus(false)
-    }, [addStatus, borderStatus, photoStatus]);
+        setStatus(false)
+    }, [addStatus, status]);
 
     return (
         <>
         <div className="flex flex-col h-[calc(100vh-74px)]">
             <div className="grid grid-cols-5 flex-grow">
                 <div className="col-span-1 bg-[#D9D9D9]">
+                    <div className="h-2"></div>
                     <ToggleButton text1="Personal albums" text2="Shared albums" toggle={toggleAlbum} setToggle={setToggleAlbum} />
                     <AlbumInfo albums={albums} albumList={albumList} setUserPerm={setUserPerm} 
                     userPerm={userPerm} setAlbums={setAlbums} perm={perm} setPerm={setPerm}
-                    addStatus={addStatus} setAddStatus={setAddStatus}
+                    addStatus={addStatus} setAddStatus={setAddStatus} setStatus={setStatus}
                     />
                 </div>
                 <div className="col-span-4">
-                    <PhotoToggle item1="All photos" item2="Album only" toggle={toggle} setToggle={setToggle} setPhotoStatus={setPhotoStatus}/>
+                    <PhotoToggle item1="All photos" item2="Album only" toggle={toggle} setToggle={setToggle} setStatus={setStatus}/>
                     <div className="h-4"></div>
                     <div className="grid grid-cols-5">
-                        <PhotoDisplay albums={albums} photoList={photoList} toggle={toggle} setBorderStatus={setBorderStatus} setPhotoStatus={setPhotoStatus}/>
+                        <PhotoDisplay albums={albums} photoList={photoList} toggle={toggle} setStatus={setStatus} />
                     </div>
                 </div>
             </div>    

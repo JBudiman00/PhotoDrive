@@ -31,13 +31,12 @@ export default function photoToggle (props: any) {
             .then((response) => {
                 console.log(response);
                 //Reload element containing uploaded photos
-                props.setPhotoStatus(true);
+                props.setStatus(true);
                 setIsOpen(false);
             })
             .catch((response) => {
                 console.log(response)
             });
-
         }
     }
     const handleFileChange = (e: any) => {
