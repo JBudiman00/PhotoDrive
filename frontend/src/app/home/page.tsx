@@ -4,6 +4,7 @@ import axios from 'axios';
 import PhotoToggle from '../components/photoToggle';
 import PhotoDisplay from '../components/photoDisplay';
 import AlbumInfo from '../components/albumInfo'
+import SharedAlbums from '../components/sharedAlbums';
 import { useRouter } from 'next/navigation';
 import ToggleButton from '../components/buttonToggle';
 
@@ -28,8 +29,10 @@ export default function Home() {
     const [toggleAlbum, setToggleAlbum] = useState(true);
     //Array storing all photos for a user
     const [photoList, setPhotoList] = useState<any>([]);
-    //Array storing all albums for a user
-    const [albumList, setAlbumList] = useState<any>([]);
+    //Array storing all personal albums for a user
+    const [personalAlbums, setPersonalAlbums] = useState<any>([]);
+    //Array storing all shared albums for a user
+    const [sharedAlbums, setSharedAlbums] = useState<any>([]);
     //Stores user-selected albums for viewing
     const [albums, setAlbums] = useState<albumInterface>({} as albumInterface);
     //Array storing view-permissions for all albums
@@ -48,8 +51,9 @@ export default function Home() {
         //Fetch all user albums
         axios.get("http://localhost:8000/albums", { withCredentials: true })
         .then((response: any) => {
-            setAlbumList(response.data);
-        }).catch(error => {
+            setPersonalAlbums(response.data);
+        })
+        .catch(error => {
             console.log(error.response.data);
             if(error.response.data == "Unauthorized"){
                 router.push('/login');
@@ -70,6 +74,12 @@ export default function Home() {
             setUserPerm(response.data)
         })
 
+        //Fetch shared albums
+        axios.get('http://localhost:8000/albums/shared', { withCredentials: true })
+        .then((response) => {
+            setSharedAlbums(response.data);
+        })
+
         setStatus(false)
     }, [addStatus, status]);
 
@@ -79,11 +89,22 @@ export default function Home() {
             <div className="grid grid-cols-5 flex-grow">
                 <div className="col-span-1 bg-[#D9D9D9]">
                     <div className="h-2"></div>
-                    <ToggleButton text1="Personal albums" text2="Shared albums" toggle={toggleAlbum} setToggle={setToggleAlbum} />
-                    <AlbumInfo albums={albums} albumList={albumList} setUserPerm={setUserPerm} 
-                    userPerm={userPerm} setAlbums={setAlbums} perm={perm} setPerm={setPerm}
-                    addStatus={addStatus} setAddStatus={setAddStatus} setStatus={setStatus}
-                    />
+                    <div onClick={() => {
+                        setToggleAlbum(!toggleAlbum);
+                        setAlbums({} as albumInterface);
+                        }}>
+                        <ToggleButton text1="Personal albums" text2="Shared albums" toggle={toggleAlbum}/>
+                    </div>
+                    {/* Album Sidebar Display */}
+                    {toggleAlbum && (
+                        <AlbumInfo albums={albums} albumList={personalAlbums} setUserPerm={setUserPerm} 
+                        userPerm={userPerm} setAlbums={setAlbums} perm={perm} setPerm={setPerm}
+                        addStatus={addStatus} setAddStatus={setAddStatus} setStatus={setStatus}
+                        />
+                    )}
+                    {!toggleAlbum && (
+                        <SharedAlbums sharedAlbums={sharedAlbums}/>
+                    )}
                 </div>
                 <div className="col-span-4">
                     <PhotoToggle item1="All photos" item2="Album only" toggle={toggle} setToggle={setToggle} setStatus={setStatus}/>

@@ -19,6 +19,5 @@ router.post('/:img_id/album/:album_id', photoController.photoalbumCreate)
 //DELETE photo from album 
 router.delete('/:img_id/album/:album_id', photoController.photoalbumDelete)
 
-
 module.exports = router;
 export{}

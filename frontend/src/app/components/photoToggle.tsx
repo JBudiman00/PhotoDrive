@@ -40,15 +40,15 @@ export default function photoToggle (props: any) {
         }
     }
     const handleFileChange = (e: any) => {
-        // const filesArray: Array<any> = Array.from(e.target.files);
-        // setSelectedFiles(filesArray);
         setSelectedFiles(e.target.files[0]);
       };
 
     return (
         <div className="grid grid-cols-2 mt-2">
             <div className="flex flex-row">
-                {<ToggleButton text1={props.item1} text2={props.item2} toggle={props.toggle} setToggle={props.setToggle}/>}
+                <div onClick={() => props.setToggle(!props.toggle)}>
+                    {<ToggleButton text1={props.item1} text2={props.item2} toggle={props.toggle}/>}
+                </div>
             </div>
             <div className="flex flex-row justify-end">
                 <button className="flex rounded-full text-4xl justify-center items-center bg-[#212A3E] text-[#F1F6F9] h-12 w-12 pb-1"

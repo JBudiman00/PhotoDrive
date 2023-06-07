@@ -111,6 +111,15 @@ async function albumuserGet(req: any, res: any, next: any){
   }
 }
 
+async function albumuserShared(req: any, res: any, next: any){
+  try {
+    res.status(200).json(await albumServices.photoAlbumShared(req.user.userId));
+  } catch (err: any) {
+    res.status(404).json({message: err});
+    next(err);
+  }
+}
+
 module.exports = {
   get,
   create,
@@ -118,7 +127,8 @@ module.exports = {
   remove,
   albumuserCreate,
   albumuserDelete,
-  albumuserGet
+  albumuserGet,
+  albumuserShared
 };
 
 export{}

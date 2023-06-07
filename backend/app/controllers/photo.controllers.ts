@@ -106,7 +106,7 @@ module.exports = {
   update,
   remove,
   photoalbumCreate,
-  photoalbumDelete,
+  photoalbumDelete
 };
 
 export{}

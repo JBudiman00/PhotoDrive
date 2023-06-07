@@ -19,4 +19,6 @@ router.post('/:album_id/users/:user_id', albumController.albumuserCreate);
 router.delete('/:album_id/users/:user_id', albumController.albumuserDelete);
 //GET users from album viewlist
 router.get('/all', albumController.albumuserGet);
+//GET all albums with user share access
+router.get('/shared', albumController.albumuserShared);
 module.exports = router;

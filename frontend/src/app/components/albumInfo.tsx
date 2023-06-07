@@ -31,16 +31,11 @@ export default function AlbumInfo (props: albumInfo){
     const [email, setEmail] = useState<string>("");
     //Variable to determine whether to open or close add album popup
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [albumSelected, setAlbumSelected] = useState<boolean>(false);
 
     //Available albums for selection in dropdown menu
     const option = props.albumList.map((item: any) => {
         return {value: item, label: item.album_name}
-    })
-
-    //Show all users not in album
-    //Not corretly putting in data
-    const userOption = props.perm.map((item: any) => {
-        return {value: item, label: item.name}
     })
 
     //UseEffect to update user permissions based on user selection
@@ -53,8 +48,14 @@ export default function AlbumInfo (props: albumInfo){
             }
           }
         };
-    
         getPerm();
+
+        //If show is true, display album selected
+        if(Object.keys(props.albums).length != 0){
+            setAlbumSelected(true);
+        } else {
+            setAlbumSelected(false);
+        }
       }, [props.albums.album_id, props.userPerm, props.addStatus]);
 
     //Post request to delete user from database
@@ -108,71 +109,33 @@ export default function AlbumInfo (props: albumInfo){
         }
     }
 
-    //Component that shwos user permissions to an album
-    function ShowUserPerm(){
-        const onClick = (e: any) => {
-            e.preventDefault();
-            //Album ID to be deleted
-            const id = props.albums.album_id
+    const onClick = (e: any) => {
+        e.preventDefault();
+        //Album ID to be deleted
+        const id = props.albums.album_id
 
-            //API
-            axios({
-                method: "delete",
-                url: 'http://localhost:8000/albums/' + id,
-                // data: {album_id: id},
-                // headers: { "Content-Type": "application/json" },
-            })
-            .then((response) => {
-                console.log(response);
-                //Regenerate API call
-                props.setStatus(true);
-                //Reset selected album
-                props.setAlbums({});
-            })
-            .catch((response) => {
-                console.log(response)
-            });
-        }
-
-        //If show is true, display 
-        if(Object.keys(props.albums).length != 0){
-            return (
-                <div className="text-center w-5/6">
-                    <p>{props.albums.album_name}</p>
-                    <p>{props.albums.date}</p>
-                    <p>Shared with</p>
-                    {props.perm.map((item: any) => {
-                        return (
-                            <div key={item.user_id} className="flex flex-row bg-[#394867] text-[#F1F6F9] h-10 rounded-2xl my-2 text-lg items-center">
-                                <p className="w-5/6">{item.name}</p>
-                                <div className="flex w-1/6 justify-end">
-                                    <img onClick={() => deleteUser(item.user_id, props.albums.album_id)} src="deleteicon.png" className="h-6 mr-2"/>
-                                </div>
-                            </div>
-                        );
-                    })}
-                    <form onSubmit={addUser}>
-                        <input 
-                            type="text"
-                            onChange={((e: any) => setEmail(e.target.value))}
-                            className="w-2/3 text-xl py-1"    
-                        />
-                        <button type="submit" className="bg-[#394867] text-[#FFFFFF] rounded-lg p-2 mt-2">Submit</button>
-                    </form>
-                    <p>{props.addStatus}</p>
-                    <div className="h-6"></div>
-                    <div className="bg-[#F90000] rounded-lg m-auto w-1/3 p-1" onClick={onClick}>
-                        <p>Delete</p>
-                    </div>
-                </div>
-                );
-        }
-        return <></>;
+        //API
+        axios({
+            method: "delete",
+            url: 'http://localhost:8000/albums/' + id,
+            // data: {album_id: id},
+            // headers: { "Content-Type": "application/json" },
+        })
+        .then((response) => {
+            console.log(response);
+            //Regenerate API call
+            props.setStatus(true);
+            //Reset selected album
+            props.setAlbums({});
+        })
+        .catch((response) => {
+            console.log(response)
+        });
     }
-
     //Component to add new album
     function AddAlbum(){
         const [albumName, setAlbumName] = useState("");
+        
 
         const handleSubmit = (e: any) => {
             e.preventDefault();
@@ -252,8 +215,39 @@ export default function AlbumInfo (props: albumInfo){
                     onChange={(e) => {albumSelect(e)}}
                 />
             </div>
-            <ShowUserPerm />
-            <AddAlbum />
+            {albumSelected && 
+                <div className="text-center w-5/6">
+                    <p>{props.albums.album_name}</p>
+                    <p>{props.albums.date}</p>
+                    <p>Shared with</p>
+                    {props.perm.map((item: any) => {
+                        return (
+                            <div key={item.user_id} className="flex flex-row bg-[#394867] text-[#F1F6F9] h-10 rounded-2xl my-2 text-lg items-center">
+                                <p className="w-5/6">{item.name}</p>
+                                <div className="flex w-1/6 justify-end">
+                                    <img onClick={() => deleteUser(item.user_id, props.albums.album_id)} src="deleteicon.png" className="h-6 mr-2"/>
+                                </div>
+                            </div>
+                        );
+                    })}
+                    <form onSubmit={addUser}>
+                        <input 
+                            type="text"
+                            value={email}
+                            onChange={(e: any) => setEmail(e.target.value)}
+
+                            className="w-2/3 text-xl py-1"    
+                        />
+                        <button type="submit" className="bg-[#394867] text-[#FFFFFF] rounded-lg p-2 mt-2">Submit</button>
+                    </form>
+                    <p>{props.addStatus}</p>
+                    <div className="h-6"></div>
+                    <div className="bg-[#F90000] rounded-lg m-auto w-1/3 p-1" onClick={onClick}>
+                        <p>Delete</p>
+                    </div>
+                </div>
+            }
+                <AddAlbum />
         </div>
     )
 }

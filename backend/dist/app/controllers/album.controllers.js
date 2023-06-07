@@ -141,6 +141,17 @@ function albumuserGet(req, res, next) {
         }
     });
 }
+function albumuserShared(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.status(200).json(yield albumServices.photoAlbumShared(req.user.userId));
+        }
+        catch (err) {
+            res.status(404).json({ message: err });
+            next(err);
+        }
+    });
+}
 module.exports = {
     get,
     create,
@@ -148,5 +159,6 @@ module.exports = {
     remove,
     albumuserCreate,
     albumuserDelete,
-    albumuserGet
+    albumuserGet,
+    albumuserShared
 };

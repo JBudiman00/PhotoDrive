@@ -148,6 +148,43 @@ function albumUserGet(user_id) {
         }
     });
 }
+function photoAlbumShared(user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            //Find all user view shared albums
+            const query = yield client_1.default.userAlbums.findMany({
+                where: {
+                    user_id: user_id
+                },
+                select: {
+                    album: true
+                }
+            });
+            //Group and format data
+            const groupedData = yield Promise.all(query.map((i) => __awaiter(this, void 0, void 0, function* () {
+                //Get user info for each album
+                const miniQuery = yield client_1.default.users.findUnique({
+                    where: {
+                        user_id: i.album.user_id
+                    }
+                });
+                return {
+                    album_id: i.album.album_id,
+                    info: {
+                        date: i.album.date,
+                        album_name: i.album.album_name,
+                        name: miniQuery.name,
+                        email: miniQuery.email
+                    }
+                };
+            })));
+            return groupedData;
+        }
+        catch (e) {
+            throw e;
+        }
+    });
+}
 function verify(album_id, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -176,5 +213,6 @@ module.exports = {
     albumUserCreate,
     albumUserDelete,
     verify,
-    albumUserGet
+    albumUserGet,
+    photoAlbumShared
 };

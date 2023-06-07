@@ -131,6 +131,41 @@ async function albumUserGet(user_id: number){
     }
 }
 
+async function photoAlbumShared(user_id: number){
+    try {
+        //Find all user view shared albums
+        const query = await prisma.userAlbums.findMany({
+            where: {
+                user_id: user_id
+            },
+            select: {
+                album: true
+            }
+        })
+        //Group and format data
+        const groupedData = await Promise.all(query.map(async (i: any) => {
+            //Get user info for each album
+            const miniQuery: any = await prisma.users.findUnique({
+                where:{
+                    user_id: i.album.user_id
+                }
+            });
+            return{
+                album_id: i.album.album_id,
+                info: {
+                    date: i.album.date,
+                    album_name: i.album.album_name,
+                    name: miniQuery.name,
+                    email: miniQuery.email
+                }
+            };
+        }));
+        return groupedData;
+    } catch(e: any) {
+        throw e
+    }
+}
+
 async function verify(album_id: number, user_id: number){
     try {
         const query = await prisma.albums.findMany({
@@ -157,5 +192,6 @@ module.exports = {
     albumUserCreate,
     albumUserDelete,
     verify,
-    albumUserGet
+    albumUserGet,
+    photoAlbumShared
   };
