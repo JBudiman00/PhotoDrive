@@ -10,7 +10,8 @@ interface PhotoInterface {
     photoList: Array<any>,
     //Toggle equals true for all photos and false for album only
     toggle: boolean,
-    setStatus: any
+    setStatus: any,
+    toggleAlbum: boolean
 }
 
 export default function PhotoDisplay (props: PhotoInterface) {
@@ -62,11 +63,18 @@ export default function PhotoDisplay (props: PhotoInterface) {
         if((!(item.photoalbums === undefined) && item.photoalbums.some((e: any) => e.album_id === album_id))){
             return (
                 <div className="flex flex-row grid-span-1" key={item.img_id}>
-                    <div className="flex flex-col items-center h-48 ml-2">
-                        <img className="border-2 border-blue-500" src={item.img} onClick={(e:any) => handleClick(e, item, true)}/>
+                    <div className="flex flex-col items-center  ml-2">
+                        {props.toggleAlbum && 
+                            <img className="border-2 border-blue-500 object-contain" src={item.img} onClick={(e:any) => handleClick(e, item, true)}/>
+                        }
+                        {!props.toggleAlbum && 
+                            <img className="border-2 border-blue-500 object-contain" src={item.img}/>
+                        }
                         <p>{item.img_name}</p>
                     </div>
-                    <img src="redx.png" className="w-4 h-4"/>
+                    {props.toggleAlbum && 
+                        <img src="redx.png" className="w-4 h-4" onClick={(e:any) => deleteClick(e, item.img_id)}/>
+                    }
                 </div>
             );
         }
@@ -75,11 +83,18 @@ export default function PhotoDisplay (props: PhotoInterface) {
         if(props.toggle == true){
             return (
                 <div className="flex flex-row grid-span-1" key={item.img_id}>
-                    <div className="flex flex-col items-center h-48 ml-2">
-                        <img src={item.img} onClick={(e:any) => handleClick(e, item, false)}/>
+                    <div className="flex flex-col items-center  ml-2">
+                        {props.toggleAlbum && 
+                            <img className="object-contain" src={item.img} onClick={(e:any) => handleClick(e, item, false)}/>
+                        }
+                        {!props.toggleAlbum && 
+                            <img className="object-contain" src={item.img}/>
+                        }
                         <p>{item.img_name}</p>
                     </div>
-                    <img src="redx.png" className="w-4 h-4" onClick={(e:any) => deleteClick(e, item.img_id)}/>
+                    {props.toggleAlbum && 
+                        <img src="redx.png" className="w-4 h-4" onClick={(e:any) => deleteClick(e, item.img_id)}/>
+                    }
                 </div>
             );
         }

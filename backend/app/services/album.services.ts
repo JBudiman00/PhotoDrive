@@ -6,8 +6,24 @@ async function read(user_id: number){
         where: {
             user_id: +user_id
         },
+        include: {
+            user: true
+        }
     })
-    return user
+    //Group and format data
+    //To keep form consistent with shared albums, form consists of album_id and info section containing album info and the user owner information
+    const groupedData = await Promise.all(user.map(async (i: any) => {
+        return{
+            album_id: i.album_id,
+            info: {
+                date: i.date,
+                album_name: i.album_name,
+                name: i.user.name,
+                email: i.user.email
+            }
+        };
+    }));
+    return groupedData;
 }
 
 async function create(albumInfo: Prisma.AlbumsCreateInput){

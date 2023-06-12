@@ -10,7 +10,7 @@ const guid_1 = __importDefault(require("../utils/guid"));
 const storage = multer.diskStorage({
     // destination: process.cwd() + '\\photos\\',
     //Custom url because files have to be stored in public on the frontend to be viewed
-    destination: 'C:\\Users\\13145\\Documents\\GitHub\\PhotoDrive\\frontend\\public\\photos',
+    destination: 'C:\\Users\\Nathan Budiman\\Documents\\GitHub\\PhotoDrive\\frontend\\public\\photos',
     filename: function (req, file, cb) {
         const uuidfile = (0, guid_1.default)() + path.extname(file.originalname);
         cb(null, uuidfile);

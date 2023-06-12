@@ -23,7 +23,8 @@ interface albumInfo {
     setPerm: any,
     addStatus: string,
     setAddStatus: any,
-    setStatus: any
+    setStatus: any,
+    toggleAlbum: boolean
 }
 
 export default function AlbumInfo (props: albumInfo){
@@ -35,7 +36,7 @@ export default function AlbumInfo (props: albumInfo){
 
     //Available albums for selection in dropdown menu
     const option = props.albumList.map((item: any) => {
-        return {value: item, label: item.album_name}
+        return {value: item, label: item.info.album_name}
     })
 
     //UseEffect to update user permissions based on user selection
@@ -86,16 +87,8 @@ export default function AlbumInfo (props: albumInfo){
                 props.setAddStatus("User successfully added to album");
             })
         } catch(err: any){
-            console.log(err.response.status)
-            if (err.response.status === 404){
-                console.log("Unable to find user with given email");
-                props.setAddStatus("Unable to find user with given email")
-            } else if(err.response.status == 409){
-                console.log("User already in album");
-                props.setAddStatus("User already in album")
-            } else {
-                console.error(err);
-            }
+            console.log(err.response.data.message);
+            props.setAddStatus(err.response.data.message)
         }
     }
 
@@ -104,8 +97,10 @@ export default function AlbumInfo (props: albumInfo){
         if(e == null){
             props.setAlbums({});
             props.setPerm([]);
+            props.setAddStatus("");
         } else {
             props.setAlbums(e.value);
+            props.setAddStatus("");
         }
     }
 
@@ -136,7 +131,6 @@ export default function AlbumInfo (props: albumInfo){
     function AddAlbum(){
         const [albumName, setAlbumName] = useState("");
         
-
         const handleSubmit = (e: any) => {
             e.preventDefault();
             if(albumName != ""){
@@ -201,10 +195,12 @@ export default function AlbumInfo (props: albumInfo){
     return (
         <div className="flex flex-col items-center">
             <div className="flex flex-row">
-                <button className="flex rounded-full text-4xl justify-center items-center bg-[#212A3E] text-[#F1F6F9] h-10 w-10 pb-1 mt-2 mr-1"
+                {props.toggleAlbum && 
+                    <button className="flex rounded-full text-4xl justify-center items-center bg-[#212A3E] text-[#F1F6F9] h-10 w-10 pb-1 mt-2 mr-1"
                         onClick={handleClick}>
                         +
                     </button>
+                }
                 <Select 
                     className="basic-single mt-2"
                     classNamePrefix="select"
@@ -215,7 +211,7 @@ export default function AlbumInfo (props: albumInfo){
                     onChange={(e) => {albumSelect(e)}}
                 />
             </div>
-            {albumSelected && 
+            {albumSelected && props.toggleAlbum &&
                 <div className="text-center w-5/6">
                     <p>{props.albums.album_name}</p>
                     <p>{props.albums.date}</p>

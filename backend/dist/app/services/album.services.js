@@ -19,8 +19,24 @@ function read(user_id) {
             where: {
                 user_id: +user_id
             },
+            include: {
+                user: true
+            }
         });
-        return user;
+        //Group and format data
+        //To keep form consistent with shared albums, form consists of album_id and info section containing album info and the user owner information
+        const groupedData = yield Promise.all(user.map((i) => __awaiter(this, void 0, void 0, function* () {
+            return {
+                album_id: i.album_id,
+                info: {
+                    date: i.date,
+                    album_name: i.album_name,
+                    name: i.user.name,
+                    email: i.user.email
+                }
+            };
+        })));
+        return groupedData;
     });
 }
 function create(albumInfo) {

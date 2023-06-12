@@ -4,7 +4,6 @@ import axios from 'axios';
 import PhotoToggle from '../components/photoToggle';
 import PhotoDisplay from '../components/photoDisplay';
 import AlbumInfo from '../components/albumInfo'
-import SharedAlbums from '../components/sharedAlbums';
 import { useRouter } from 'next/navigation';
 import ToggleButton from '../components/buttonToggle';
 
@@ -28,7 +27,9 @@ export default function Home() {
     //Toggle button between viewing personal albums and shared albums
     const [toggleAlbum, setToggleAlbum] = useState(true);
     //Array storing all photos for a user
-    const [photoList, setPhotoList] = useState<any>([]);
+    const [personalPhotos, setPersonalPhotos] = useState<any>([]);
+    //Array storing all shared photos for a user
+    const [sharedPhotos, setSharedPhotos] = useState<any>([]);
     //Array storing all personal albums for a user
     const [personalAlbums, setPersonalAlbums] = useState<any>([]);
     //Array storing all shared albums for a user
@@ -63,7 +64,15 @@ export default function Home() {
         //Fetch all user photos
         axios.get("http://localhost:8000/photos", { withCredentials: true })
         .then((response: any) => {
-            setPhotoList(response.data)
+            setPersonalPhotos(response.data)
+        }).catch(error => {
+            console.log(error.response.data);
+        });
+
+        //Fetch all shared user photos
+        axios.get("http://localhost:8000/photos/shared", { withCredentials: true })
+        .then((response: any) => {
+            setSharedPhotos(response.data)
         }).catch(error => {
             console.log(error.response.data);
         });
@@ -100,17 +109,27 @@ export default function Home() {
                         <AlbumInfo albums={albums} albumList={personalAlbums} setUserPerm={setUserPerm} 
                         userPerm={userPerm} setAlbums={setAlbums} perm={perm} setPerm={setPerm}
                         addStatus={addStatus} setAddStatus={setAddStatus} setStatus={setStatus}
+                        toggleAlbum={toggleAlbum}
                         />
                     )}
                     {!toggleAlbum && (
-                        <SharedAlbums sharedAlbums={sharedAlbums}/>
+                        <AlbumInfo albums={albums} albumList={sharedAlbums} setUserPerm={setUserPerm} 
+                        userPerm={userPerm} setAlbums={setAlbums} perm={perm} setPerm={setPerm}
+                        addStatus={addStatus} setAddStatus={setAddStatus} setStatus={setStatus}
+                        toggleAlbum={toggleAlbum}
+                        />
                     )}
                 </div>
                 <div className="col-span-4">
                     <PhotoToggle item1="All photos" item2="Album only" toggle={toggle} setToggle={setToggle} setStatus={setStatus}/>
                     <div className="h-4"></div>
                     <div className="grid grid-cols-5">
-                        <PhotoDisplay albums={albums} photoList={photoList} toggle={toggle} setStatus={setStatus} />
+                        {toggleAlbum && (
+                            <PhotoDisplay albums={albums} photoList={personalPhotos} toggle={toggle} setStatus={setStatus} toggleAlbum={toggleAlbum}/>
+                        )}
+                        {!toggleAlbum && (
+                            <PhotoDisplay albums={albums} photoList={sharedPhotos} toggle={toggle} setStatus={setStatus} toggleAlbum={toggleAlbum}/>
+                        )}
                     </div>
                 </div>
             </div>    

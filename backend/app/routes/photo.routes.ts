@@ -18,6 +18,8 @@ router.delete('/', photoController.remove)
 router.post('/:img_id/album/:album_id', photoController.photoalbumCreate)
 //DELETE photo from album 
 router.delete('/:img_id/album/:album_id', photoController.photoalbumDelete)
+//GET all shared photos
+router.get('/shared', photoController.getShared)
 
 module.exports = router;
 export{}

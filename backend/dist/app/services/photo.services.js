@@ -176,6 +176,54 @@ function verify(album_id, img_id, user_id) {
         }
     });
 }
+function getShared(user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            //Get all photos
+            const photos = yield client_1.default.photos.findMany({
+                select: {
+                    img_id: true,
+                    img: true,
+                    date: true,
+                    img_name: true,
+                    user_id: true,
+                    photoalbums: {
+                        select: {
+                            album_id: true
+                        }
+                    }
+                }
+            });
+            //Get all albums shared with user
+            const albums = yield client_1.default.userAlbums.findMany({
+                where: {
+                    user_id: +user_id
+                },
+                select: {
+                    album_id: true
+                }
+            });
+            //Combine queries and get all images user is allowed to view
+            const result = photos.map((item) => {
+                const verification = item.photoalbums.some((a) => {
+                    for (let x = 0; x < albums.length; x++) {
+                        if (albums[x].album_id === a.album_id) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+                if (verification === true) {
+                    return item;
+                }
+            }).filter(n => n);
+            return result;
+        }
+        catch (e) {
+            throw e;
+        }
+    });
+}
 module.exports = {
     read,
     create,
@@ -184,5 +232,6 @@ module.exports = {
     photoAlbumCreate,
     photoAlbumDelete,
     verify,
-    getPhoto
+    getPhoto,
+    getShared
 };

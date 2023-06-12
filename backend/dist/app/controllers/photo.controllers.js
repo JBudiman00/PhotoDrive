@@ -125,11 +125,23 @@ function photoalbumDelete(req, res, next) {
         }
     });
 }
+function getShared(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res.status(200).json(yield photoServices.getShared(req.user.userId));
+        }
+        catch (err) {
+            res.status(404).json({ message: err });
+            next(err);
+        }
+    });
+}
 module.exports = {
     get,
     create,
     update,
     remove,
     photoalbumCreate,
-    photoalbumDelete
+    photoalbumDelete,
+    getShared
 };

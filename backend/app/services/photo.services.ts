@@ -150,6 +150,53 @@ async function verify(album_id: number, img_id: number, user_id: number){
     }
 }
 
+async function getShared(user_id: number){
+    try {
+        //Get all photos
+        const photos = await prisma.photos.findMany({
+            select: {
+                img_id: true,
+                img: true,
+                date: true,
+                img_name: true,
+                user_id: true,
+                photoalbums: {
+                select:{
+                    album_id: true
+                }
+            }
+            }
+        });
+        //Get all albums shared with user
+        const albums = await prisma.userAlbums.findMany({
+            where: {
+                user_id: +user_id
+            },
+            select: {
+                album_id: true
+            }
+        });
+        //Combine queries and get all images user is allowed to view
+        const result = photos.map((item: any) => {
+            const verification = item.photoalbums.some((a: any) => {
+                for (let x=0; x < albums.length; x++){
+                    if(albums[x].album_id === a.album_id){
+                        return true
+                    }
+                }
+                return false
+            })
+            if (verification === true){
+                return item
+            }
+        }).filter(n => n);
+
+        return result
+    } catch(e: any) {
+        throw e
+    }
+}
+
 module.exports = {
     read,
     create,
@@ -158,5 +205,6 @@ module.exports = {
     photoAlbumCreate,
     photoAlbumDelete,
     verify,
-    getPhoto
+    getPhoto,
+    getShared
   };

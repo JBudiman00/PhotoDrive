@@ -100,13 +100,23 @@ async function photoalbumDelete(req: any, res: any, next: any) {
   }
 }
 
+async function getShared(req: any, res: any, next: any){
+  try {
+    res.status(200).json(await photoServices.getShared(req.user.userId));
+  } catch (err: any) {
+    res.status(404).json({message: err})
+    next(err);
+  }
+}
+
 module.exports = {
   get,
   create,
   update,
   remove,
   photoalbumCreate,
-  photoalbumDelete
+  photoalbumDelete,
+  getShared
 };
 
 export{}
